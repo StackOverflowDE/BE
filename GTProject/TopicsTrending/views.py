@@ -1,12 +1,11 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Job, Skill, Repository, Question, TechBlog
+from .models import Job, Skill, Repository, Question
 from .serializers import (
     JobSerializer,
     SkillSerializer,
     RepositorySerializer,
     QuestionSerializer,
-    TechBlogSerializer,
 )
 
 
@@ -29,7 +28,3 @@ class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
-
-class TechBlogViewSet(viewsets.ModelViewSet):
-    queryset = TechBlog.objects.all()
-    serializer_class = TechBlogSerializer

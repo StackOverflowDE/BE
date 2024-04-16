@@ -22,7 +22,6 @@ from TopicsTrending.views import (
     SkillViewSet,
     RepositoryViewSet,
     QuestionViewSet,
-    TechBlogViewSet,
 )
 
 
@@ -31,8 +30,6 @@ router.register(r"jobs", JobViewSet)
 router.register(r"skills", SkillViewSet)
 router.register(r"repositories", RepositoryViewSet)
 router.register(r"questions", QuestionViewSet)
-router.register(r"techblogs", TechBlogViewSet)
-
 
 urlpatterns = [
     path("api/jobs/", JobViewSet.as_view({"get": "list"}), name="job-list"),

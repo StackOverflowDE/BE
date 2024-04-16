@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Job, Skill, Repository, Question, TechBlog
+from .models import Job, Skill, Repository, Question
 
 
 class JobSerializer(serializers.ModelSerializer):
@@ -25,8 +25,3 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = "__all__"
 
-
-class TechBlogSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TechBlog
-        fields = "__all__"
