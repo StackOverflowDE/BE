@@ -29,5 +29,6 @@ router.register(r'techblogs', TechBlogViewSet)
 
 
 urlpatterns = [
+    path('api/jobs/', JobViewSet.as_view({'get': 'list'}), name='job-list'),
     path('', include(router.urls)),
 ]
