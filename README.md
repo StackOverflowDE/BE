@@ -12,3 +12,8 @@
 6. rocal repo에서 python -m pip install Django
 7. rocal repo에서 python -m pip install djangorestframework
 8. rocal repo에서 python manage.py runserver (실행)
+
+DB 활용
+1. rocal repo에서 python createsuperuser (DB 접속을 위한)
+
+
