@@ -17,11 +17,13 @@ class Repository(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+
 class Question(models.Model):
     title = models.CharField(max_length=100, null=False)
     url = models.CharField(max_length=100, null=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 class Job(models.Model):
     name = models.CharField(max_length=100, null=False)
