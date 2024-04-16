@@ -24,20 +24,24 @@ class Repository(models.Model):
 
     @classmethod
     def add_data_from_file(cls, file_path):
+        # 텍스트 파일 열기
         with open(file_path, 'r', encoding='utf-8') as file:
+            # 각 줄을 읽어와 데이터베이스에 추가
             for line in file:
+                # 줄을 쉼표로 분할하여 필드 값 가져오기
                 fields = line.strip().split(',')
+                # 데이터베이스에 추가
                 cls.objects.create(
                     title=fields[0],
                     url=fields[1],
-                    created_at=timezone.datetime.strptime(fields[2], '%Y-%m-%d %H:%M:%S'),
-                    updated_at=timezone.datetime.strptime(fields[3], '%Y-%m-%d %H:%M:%S'),
+                    created_at=timezone.datetime.fromisoformat(fields[2]),
+                    updated_at=timezone.datetime.fromisoformat(fields[3]),
                     forks=int(fields[4]),
-                    stars=int(fields[5]),
-                    img=fields[6],
-                    view=int(fields[7]),
-                    repo_created_at=timezone.datetime.strptime(fields[8], '%Y-%m-%d %H:%M:%S'),
-                    repo_tags=fields[9]
+                    img=fields[5],
+                    repo_created_at=timezone.datetime.fromisoformat(fields[6]),
+                    repo_tags=fields[7],
+                    stars=int(fields[8]),
+                    view=int(fields[9])
                 )
 
 
