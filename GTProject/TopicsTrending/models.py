@@ -41,7 +41,8 @@ class Repository(models.Model):
                     repo_created_at=timezone.datetime.fromisoformat(fields[6]),
                     repo_tags=fields[7],
                     stars=int(fields[8]),
-                    view=int(fields[9])
+                    view=int(fields[9]),
+                    skill=int(fields[10])
                 )
 
 
