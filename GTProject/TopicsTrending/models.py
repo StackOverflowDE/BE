@@ -3,10 +3,9 @@ from django.utils import timezone
 
 class Skill(models.Model):
     name = models.CharField(max_length=100, null=False)
-    repository = models.ForeignKey("Repository", on_delete=models.CASCADE)
-    question = models.ForeignKey("Question", on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    job = models.ForeignKey('Job', on_delete=models.CASCADE, null=True)
 
 
 class Repository(models.Model):
@@ -20,6 +19,7 @@ class Repository(models.Model):
     view = models.IntegerField(default=0)
     repo_created_at = models.DateTimeField(default=timezone.now)
     repo_tags = models.CharField(max_length=100, default='')
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE, null=True)
 
 
     @classmethod
@@ -53,10 +53,10 @@ class Question(models.Model):
     view = models.IntegerField(default=0)
     question_tags = models.CharField(max_length=100, default='', null=False)
     img = models.CharField(max_length=100, default='')
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE, null=True)
 
 
 class Job(models.Model):
     name = models.CharField(max_length=100, default='', null=False)
-    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
