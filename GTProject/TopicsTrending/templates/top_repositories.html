@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Top Repositories</title>
+</head>
+<body>
+    <h1>Top Repositories</h1>
+    <ul>
+        {% for repository in top_repositories %}
+            <li>
+                <img src="{{ repository.img }}" alt="{{ repository.title }}">
+                <a href="{{ repository.url }}">{{ repository.title }}</a>
+                <p>Forks: {{ repository.forks }}</p>
+                <p>Stars: {{ repository.stars }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
