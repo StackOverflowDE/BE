@@ -6,8 +6,9 @@ from TopicsTrending.views import (
     SkillViewSet,
     RepositoryViewSet,
     QuestionViewSet,
-    top_repositories,
-    
+    job_list,
+    skill_list,
+    repo_list
 )
 
 router = DefaultRouter()
@@ -17,8 +18,9 @@ router.register(r"repositories", RepositoryViewSet)
 router.register(r"questions", QuestionViewSet)
 
 urlpatterns = [
-    path("api/jobs/", JobViewSet.as_view({"get": "list"}), name="job-list"),
     path("", include(router.urls)),
-    path('top_repositories/', top_repositories, name='top_repositories'),
-    
+    path('jobs/', job_list, name='job_list'),  # URL 패턴에 이름 추가
+    path('skill/', skill_list, name='skill_list'),
+    path('repo/', repo_list, name='repo_list'),
+    path('index/', job_list, name='index'),  # URL 패턴에 이름 추가
 ]
