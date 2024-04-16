@@ -7,58 +7,58 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('TopicsTrending', '0001_initial'),
+        ("TopicsTrending", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='job',
-            name='created_at',
+            model_name="job",
+            name="created_at",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name='job',
-            name='updated_at',
+            model_name="job",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='question',
-            name='created_at',
+            model_name="question",
+            name="created_at",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name='question',
-            name='updated_at',
+            model_name="question",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='repository',
-            name='created_at',
+            model_name="repository",
+            name="created_at",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name='repository',
-            name='updated_at',
+            model_name="repository",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='skill',
-            name='created_at',
+            model_name="skill",
+            name="created_at",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name='skill',
-            name='updated_at',
+            model_name="skill",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='techblog',
-            name='created_at',
+            model_name="techblog",
+            name="created_at",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name='techblog',
-            name='updated_at',
+            model_name="techblog",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
     ]

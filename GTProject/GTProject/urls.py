@@ -17,18 +17,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from TopicsTrending.views import JobViewSet, SkillViewSet, RepositoryViewSet, QuestionViewSet, TechBlogViewSet
+from TopicsTrending.views import (
+    JobViewSet,
+    SkillViewSet,
+    RepositoryViewSet,
+    QuestionViewSet,
+    TechBlogViewSet,
+)
 
 
 router = DefaultRouter()
-router.register(r'jobs', JobViewSet)
-router.register(r'skills', SkillViewSet)
-router.register(r'repositories', RepositoryViewSet)
-router.register(r'questions', QuestionViewSet)
-router.register(r'techblogs', TechBlogViewSet)
+router.register(r"jobs", JobViewSet)
+router.register(r"skills", SkillViewSet)
+router.register(r"repositories", RepositoryViewSet)
+router.register(r"questions", QuestionViewSet)
+router.register(r"techblogs", TechBlogViewSet)
 
 
 urlpatterns = [
-    path('api/jobs/', JobViewSet.as_view({'get': 'list'}), name='job-list'),
-    path('', include(router.urls)),
+    path("api/jobs/", JobViewSet.as_view({"get": "list"}), name="job-list"),
+    path("", include(router.urls)),
 ]
