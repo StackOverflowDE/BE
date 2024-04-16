@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',  # 추가
     'TopicsTrending',
 ]
 
@@ -55,7 +56,9 @@ ROOT_URLCONF = 'GTProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'venv/lib/python3.12/site-packages/rest_framework/templates',  # 추가
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
