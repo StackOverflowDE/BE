@@ -44,18 +44,20 @@ def job_list(request):
 #------------------------------------------------------------
 # 선택한 직업에 해당하는 기술들의 출현 횟수를 가져오는 함수를 구현합니다.
 @api_view(['GET'])
-def skill_list(request, job_name=None):
-    if job_name is not None:
-        # 선택한 직업에 해당하는 기술들의 출현 횟수를 가져옵니다.
+def skill_list(request):
+    selected_job = request.GET.get('job')
+    
+    if selected_job:
+        # 선택한 직업에 해당하는 기술들을 가져옵니다.
         job_skills = (
             Skill.objects
-            .filter(job__name=job_name)
+            .filter(job__name=selected_job)
             .values('name')
             .annotate(count=Count('name'))
             .order_by('-count')[:5]  # 가장 많이 등장하는 5개의 기술만 가져옵니다.
         )
-        skill_count_lists = {skill['name']: skill['count'] for skill in job_skills}
-        return Response(skill_count_lists)
+        job_count_skill = {skill['name']: skill['count'] for skill in job_skills}
+        return Response(job_count_skill)
     else:
         return Response({"message": "Please select a job."}, status=status.HTTP_400_BAD_REQUEST)
 
