@@ -39,26 +39,21 @@
             $('#job_select').change(function() {
                 // 선택된 직업의 ID를 가져옵니다.
                 var jobId = $(this).val();
-
                 // 기존의 기술 목록을 지웁니다.
                 $('#skills_list').empty();
-
-                // 선택된 직업이 존재할 경우에만 기술을 가져옵니다.
-                if (jobId) {
-                    // AJAX 요청을 통해 서버에 선택된 직업에 해당하는 기술 목록을 요청합니다.
-                    $.ajax({
-                        url: skillListUrl,  // 서버에 요청할 URL입니다.
-                        type: 'GET',        // HTTP 요청 방식은 GET입니다.
-                        data: { job: jobId },  // 요청에 추가할 데이터입니다 (선택된 직업의 ID).
-                        success: function(data) {
-                            // 서버로부터 받은 기술 목록을 순회하며 각 기술을 페이지에 추가합니다.
-                            $.each(data, function(index, skill) {
-                                // 기술과 그에 해당하는 개수를 함께 페이지에 추가합니다.
-                                $('#skills_list').append($('<li>').text(skill.name + ' : ' + skill.count));
-                            });
-                        }
-                    });
-                }
+                // AJAX 요청을 통해 서버에 선택된 직업에 해당하는 기술 목록을 요청합니다.
+                $.ajax({
+                    url: skillListUrl,  // 서버에 요청할 URL입니다.
+                    type: 'GET',        // HTTP 요청 방식은 GET입니다.
+                    data: { job: jobId },  // 요청에 추가할 데이터입니다 (선택된 직업의 ID).
+                    success: function(data) {
+                        // 서버로부터 받은 기술 목록을 순회하며 각 기술을 페이지에 추가합니다.
+                        $.each(data, function(index, skill) {
+                            // 기술과 그에 해당하는 개수를 함께 페이지에 추가합니다.
+                            $('#skills_list').append($('<li>').text(skill.name + ' : ' + skill.count));
+                        });
+                    }
+                });
             });
         });
     </script>
