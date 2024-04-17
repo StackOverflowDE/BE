@@ -8,7 +8,8 @@ from TopicsTrending.views import (
     QuestionViewSet,
     job_list,
     skill_list,
-    repo_list
+    repo_list,
+    info_list
 )
 
 router = DefaultRouter()
@@ -19,8 +20,8 @@ router.register(r"questions", QuestionViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path('jobs/', job_list, name='job_list'),  # URL 패턴에 이름 추가
-    path('skill/', skill_list, name='skill_list'),
-    path('repo/', repo_list, name='repo_list'),
-    path('index/', job_list, name='index'),  # URL 패턴에 이름 추가
+    path('job-list/', job_list, name='job_list'), 
+    path('skill-list/', skill_list, name='skill_list'),
+    path('repo-list/', repo_list, name='repo_list'),
+    path('info-list/', info_list, name='info_list'),
 ]
