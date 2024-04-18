@@ -5,6 +5,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import viewsets
 from .models import Job, Skill, Repository, Question
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import permissions
+from rest_framework.views import APIView
 from .serializers import (
     JobSerializer,
     SkillSerializer,
@@ -94,3 +97,17 @@ def job_list_by_skill(request, skill):
     )
     job_count = {job['name']: job['count'] for job in jobs}
     return Response(job_count)
+
+#------------------------------------------------------------
+#swagger 문서를 위한 함수
+class SWAGGERTESTAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    @swagger_auto_schema(
+        operation_summary="Swagger Test",
+        operation_description="Swagger Test를 위한 API",
+        responses={200: "OK"}
+    )
+    def get(self, request):
+        return Response(status=status.HTTP_200_OK)
+    

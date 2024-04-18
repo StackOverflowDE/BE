@@ -9,7 +9,7 @@ from TopicsTrending.views import (
     job_list,
     skill_list,
     info_list,
-    job_list_by_skill
+    job_list_by_skill,
 )
 
 router = DefaultRouter()
