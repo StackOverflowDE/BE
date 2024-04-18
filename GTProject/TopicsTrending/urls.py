@@ -21,7 +21,7 @@ router.register(r"questions", QuestionViewSet)
 
 urlpatterns = [
     path('', index, name='index'),
-    path('skill-list/<str:job>/', skill_list, name='skill_list'),
-    path('info-list/<str:skill>/', info_list, name='info_list'),
-    path('job-list-by-skill/<str:skill>', job_list_by_skill, name='job_list_by_skill'),
+    path('TopicsTrending/skill-list/<str:job>/', skill_list, name='skill_list'),
+    path('TopicsTrending/info-list/<str:skill>/', info_list, name='info_list'),
+    path('TopicsTrending/job-list-by-skill/<str:skill>', job_list_by_skill, name='job_list_by_skill'),
 ]
