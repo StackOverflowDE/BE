@@ -668,7 +668,7 @@
             .catch((error) => console.error("Error fetching data:", error));
         });
 
-      let skillButtonCreateCnt = 0;
+      var skillButtonCreateCnt = 0;
       function createButtons(skill_name_list) {
         const container = document.getElementById("skillTags");
         container.innerHTML = ""; // Clear previous buttons
@@ -679,7 +679,6 @@
           button.innerText = skill; // Set button text to skill name
           button.className = "filter-button skill-button"; // Set class name
           button.id = "skillInput" + skillButtonCreateCnt;
-          button.type = "submit"; // Set button type
 
           // Add click event handler
           button.onclick = function () {
@@ -712,60 +711,59 @@
                 renderNodesGraph(skillData, jobData); // Function to visualize the graph
               })
               .catch((error) => console.error("Error fetching data:", error));
-
-            container.appendChild(button); // Add the button to the container
           };
+          container.appendChild(button); // Add the button to the container
         });
       }
 
       function createRepoCards(skill_repositories) {
-        skill_repositories = [
-          {
-            title: "Coding Interview University",
-            owner: "John Washam",
-            forks: 15000,
-            watches: 2000,
-            stars: 143000,
-            recent_commit_time: "2021-06-01",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-          },
-          {
-            title: "You Don’t Know JS",
-            owner: "Kyle Simpson",
-            forks: 8000,
-            watches: 1000,
-            stars: 88000,
-            recent_commit_time: "2021-05-27",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-          },
-          {
-            title: "You Don’t Know JS",
-            owner: "Kyle Simpson",
-            forks: 8000,
-            watches: 1000,
-            stars: 88000,
-            recent_commit_time: "2021-05-27",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-          },
-          {
-            title: "You Don’t Know JS",
-            owner: "Kyle Simpson",
-            forks: 8000,
-            watches: 1000,
-            stars: 88000,
-            recent_commit_time: "2021-05-27",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-          },
-          {
-            title: "You Don’t Know JS",
-            owner: "Kyle Simpson",
-            forks: 8000,
-            watches: 1000,
-            stars: 88000,
-            recent_commit_time: "2021-05-27",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-          },
-        ];
+        // skill_repositories = [
+        //   {
+        //     title: "Coding Interview University",
+        //     owner: "John Washam",
+        //     forks: 15000,
+        //     watches: 2000,
+        //     stars: 143000,
+        //     recent_commit_time: "2021-06-01",
+        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //   },
+        //   {
+        //     title: "You Don’t Know JS",
+        //     owner: "Kyle Simpson",
+        //     forks: 8000,
+        //     watches: 1000,
+        //     stars: 88000,
+        //     recent_commit_time: "2021-05-27",
+        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //   },
+        //   {
+        //     title: "You Don’t Know JS",
+        //     owner: "Kyle Simpson",
+        //     forks: 8000,
+        //     watches: 1000,
+        //     stars: 88000,
+        //     recent_commit_time: "2021-05-27",
+        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //   },
+        //   {
+        //     title: "You Don’t Know JS",
+        //     owner: "Kyle Simpson",
+        //     forks: 8000,
+        //     watches: 1000,
+        //     stars: 88000,
+        //     recent_commit_time: "2021-05-27",
+        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //   },
+        //   {
+        //     title: "You Don’t Know JS",
+        //     owner: "Kyle Simpson",
+        //     forks: 8000,
+        //     watches: 1000,
+        //     stars: 88000,
+        //     recent_commit_time: "2021-05-27",
+        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //   },
+        // ];
 
         const container = document.getElementById("contentsContainer");
         container.innerHTML = "";
@@ -832,22 +830,22 @@
       }
 
       function createQuestionsCards(skill_questions) {
-        skill_questions = [
-          {
-            url: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-            title: "Coding Interview University",
-            owner: "John Washam",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-            views: "130K",
-          },
-          {
-            url: "https://github.com/getify/You-Dont-Know-JS",
-            title: "You Don't Know JS",
-            owner: "Kyle Simpson",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-            views: "115K",
-          },
-        ];
+        // skill_questions = [
+        //   {
+        //     url: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //     title: "Coding Interview University",
+        //     owner: "John Washam",
+        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //     views: "130K",
+        //   },
+        //   {
+        //     url: "https://github.com/getify/You-Dont-Know-JS",
+        //     title: "You Don't Know JS",
+        //     owner: "Kyle Simpson",
+        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //     views: "115K",
+        //   },
+        // ];
 
         const container = document.getElementById("contentsContainer");
         container.innerHTML = "";
