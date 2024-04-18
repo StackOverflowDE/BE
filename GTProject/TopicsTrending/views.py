@@ -64,17 +64,33 @@ def info_list(request, skill):
     top_repositories = (
         Repository.objects
         .filter(skill__name=skill)  # 해당 스킬에 속하는 저장소만 필터링
-        .order_by('-view')[:5]
-        .values('title', 'url', 'view', 'img', 'stars', 'forks', 'repo_created_at')
+        .order_by('-repo_view')[:5]
+        .values('repo_title', 'repo_url', 'repo_view', 'repo_img', 'repo_stars', 'repo_forks', 'repo_writer', 'repo_recent_time')
     )
     # 스킬에 해당하는 질문 중 조회수가 가장 높은 5개의 정보를 가져옵니다.
     top_questions = (
         Question.objects
         .filter(skill__name=skill)  # 해당 스킬에 속하는 질문만 필터링
-        .order_by('-view')[:5]
-        .values('title', 'url', 'view', 'img')
+        .order_by('-qs_view')[:5]
+        .values('qs_title', 'qs_url', 'qs_view', 'qs_img', 'qs_votes', 'qs_answer', 'qs_writer')
     )
     return Response({
         "top_repositories": list(top_repositories),
         "top_questions": list(top_questions),
     })
+
+#------------------------------------------------------------
+# 스킬 하나에 묶인 직군들
+@api_view(['GET'])
+def job_list_by_skill(request, skill):
+    # 기술 이름에 해당하는 직군을 필터링하고, 중복을 제거하여 유니크한 값만 가져옴
+    jobs = (
+        Job.objects
+        .filter(skill__name=skill)  # 기술의 이름을 필터링
+        .values('name')  # 직군의 이름만 가져옴
+        .distinct()  # 중복을 제거하여 유니크한 값만 가져옴
+        .annotate(count=Count('name')) # 직군의 이름을 기준으로 그룹핑
+        .order_by('name')  # 이름 순으로 정렬
+    )
+    job_count = {job['name']: job['count'] for job in jobs}
+    return Response(job_count)
