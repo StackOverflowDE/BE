@@ -53,7 +53,7 @@ def skill_list(request, job):
         .filter(job__name=job)
         .values('name')
         .annotate(count=Count('name'))
-        .order_by('-count')[:5]  # 가장 많이 등장하는 5개의 기술만 가져옵니다.
+        .order_by('-count')[:10]  # 가장 많이 등장하는 5개의 기술만 가져옵니다.
     )
     job_count_skill = {skill['name']: skill['count'] for skill in job_skills}
     return Response(job_count_skill)
