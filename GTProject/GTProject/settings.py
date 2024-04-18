@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",  # 추가
     "TopicsTrending",
+    'drf_yasg', # 추가
 ]
 
 MIDDLEWARE = [

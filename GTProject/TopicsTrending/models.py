@@ -48,5 +48,6 @@ class Question(models.Model):
     qs_votes = models.IntegerField(default=0)
     qs_answer = models.CharField(max_length=100, default='')
     qs_writer = models.CharField(max_length=100, default='')
+    qs_recent_time = models.DateTimeField(default=timezone.now)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
 
