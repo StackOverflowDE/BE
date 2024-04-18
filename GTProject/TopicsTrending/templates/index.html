@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jobs</title>
+
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        color: #636c76;
+        font-family: "Roboto", sans-serif;
+      }
+
+      p {
+        position: relative;
+        left: -30%;
+        width: 500px;
+      }
+
+      .content {
+        position: relative;
+        bottom: -40%;
+        right: 5%;
+        width: 2000px;
+      }
+
+      .scroll-container {
+        height: 100vh;
+        overflow-y: scroll;
+        scroll-snap-type: y mandatory;
+        /* Use 'x mandatory' for horizontal snapping */
+      }
+
+      .snap-section {
+        height: 100%;
+        scroll-snap-align: start;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        border: 1px solid #ccc;
+      }
+
+      .select-container {
+        display: flex;
+        width: 100%;
+        /* background-color: blue; */
+        flex-direction: column;
+        align-items: center;
+        border-radius: 4px;
+        overflow: hidden; /* ensures the border wraps around the dropdown arrow */
+      }
+
+      /* Style the label */
+      .select-container .select-label {
+        background-color: #f0f0f0; /* light gray background */
+        padding: 10px;
+        border-right: 1px solid #ccc; /* border to separate label from dropdown */
+      }
+
+      /* Style the select dropdown */
+      .select-container select {
+        padding: 10px;
+        border: none;
+        background-color: #fff;
+        -webkit-appearance: none; /* Removes default chrome and safari style */
+        -moz-appearance: none; /* Removes default style Firefox */
+        appearance: none; /* Removes default browser style*/
+        font-size: 16px; /* Adjust this as needed */
+        cursor: pointer;
+      }
+
+      /* Style for the dropdown arrow */
+      .select-container::after {
+        /* content: "▼";
+        font-size: 12px;
+        position: relative;
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none; */
+      }
+
+      /* Style for the options */
+      .select-container select option {
+        padding: 10px;
+      }
+
+      /* Overall container to hold both label and select */
+      .dropdown-container {
+        display: flex;
+        float: left;
+        margin-right: 20px;
+        margin-left: 20px;
+        border: 1px solid #ccc; /* Border color as per your design */
+        border-radius: 4px;
+        overflow: hidden; /* To ensure border radius applies to children */
+        font-family: Arial, sans-serif; /* Your desired font */
+        font-size: 16px;
+      }
+
+      /* Label styling */
+      .dropdown-label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 85px;
+        height: 40px;
+        border: #d0d7de;
+        text-align: center;
+        background-color: #f0f0f0; /* Background color for the label */
+        border-right: 1px solid #ccc; /* Border between label and dropdown */
+        white-space: nowrap; /* Prevents wrapping of text in label */
+        font-size: 16px;
+      }
+
+      /* Select element styling */
+      .dropdown-select {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: #d0d7de;
+        width: 200px;
+        height: 40px;
+        outline: none; /* Removes the default focus outline */
+        -webkit-appearance: none; /* Removes default styling for Webkit browsers */
+        -moz-appearance: none; /* Removes default styling for Mozilla browsers */
+        appearance: none;
+        background-color: #fff; /* Background color for the select */
+        cursor: pointer; /* Change cursor to indicate it's selectable */
+        font-size: 16px;
+      }
+
+      /* Triangle icon at the end of the select element */
+      .dropdown-select::after {
+        content: "▼";
+        font-size: 12px;
+        display: flex;
+        transform: translateY(-50%);
+        pointer-events: none; /* Clicks on this element should still open the select */
+        color: #333; /* Icon color */
+      }
+
+      #jobInput {
+        background-color: #1f863c;
+        font-weight: bold;
+        font-family: "Roboto", sans-serif;
+        height: 40px;
+        color: white;
+        border: none;
+        font-size: 16px;
+        padding-inline: 30px;
+      }
+
+      #jobInput:hover {
+        background-color: #1d7536; /* Darker blue on hover */
+      }
+
+      .filter-button {
+        background-color: #f0f0f0; /* Light grey background */
+        color: #333; /* Dark grey text color */
+        padding: 5px 30px; /* Vertical and horizontal padding */
+        margin-inline: 5px;
+        font-size: 16px; /* Font size for the button text */
+        font-family: Arial, sans-serif; /* Font family */
+        border: 1px solid #ccc; /* Grey border */
+        border-radius: 7px; /* Rounded corners */
+        cursor: pointer; /* Changes the cursor to a pointer on hover */
+        text-align: center; /* Ensures the text is centered */
+        display: inline-block; /* Allows the button to size its width according to its content */
+        outline: none; /* Removes the outline on focus for some browsers */
+        -webkit-appearance: none; /* Removes default styling on some browsers */
+        -moz-appearance: none; /* Removes default styling on some browsers */
+        appearance: none; /* Removes default styling on some browsers */
+        box-shadow: none; /* Removes any browser-implemented shadow */
+        transition: background-color 0.3s, color 0.3s; /* Transition for hover effect */
+      }
+
+      /* Add a hover effect for the button */
+      .filter-button:hover {
+        background-color: #e6e6e6; /* Slightly darker grey background on hover */
+        color: #000; /* Black text color on hover */
+      }
+
+      .filter-button:active,
+      .filter-button.active {
+        /* Active state when the button is clicked */
+        background-color: #007bff; /* Blue background */
+        color: #fff; /* White text color */
+        border-color: #007bff; /* Blue border */
+      }
+
+      /* Remove the button's default styles on some browsers */
+      button::-moz-focus-inner {
+        border: 0;
+      }
+
+      .skill-chart-container {
+        width: 100%;
+        height: 70%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .skill-tag-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #snap-section-1 {
+        flex-direction: row;
+      }
+
+      #snap-section-2 {
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .content-option-container {
+        width: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        margin-bottom: 10px;
+      }
+
+      .content-view-container {
+        width: 100%;
+        height: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        padding-top: 1%;
+        /* background-color: burlywood; */
+      }
+
+      .list-view-container {
+        width: 45%;
+        height: 100%;
+        /* background-color: green; */
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .graph-view-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 45%;
+        height: 100%;
+        /* background-color: purple; */
+      }
+
+      .hr-container {
+        width: 5%;
+        height: 100%;
+        /* background-color: skyblue; */
+      }
+
+      hr {
+        width: 0;
+        height: 90%;
+      }
+
+      .skill-button {
+        background-color: #fab9148a;
+        width: fit-content;
+        padding-inline: 20px;
+        border: none;
+        color: rgb(180, 147, 0);
+        font-size: 13px;
+      }
+
+      .skill-button:active,
+      .skill-button.active {
+        /* Active state when the button is clicked */
+        background-color: #fab914f5; /* Blue background */
+        color: #2c2209ce; /* White text color */
+      }
+
+      .skill-button:hover {
+        background-color: #fab9145b;
+      }
+
+      #ContentLink {
+        width: 95%;
+        height: 18%;
+        margin-bottom: 1%;
+      }
+
+      .arrow {
+        width: 40px;
+        height: 40px;
+        position: relative;
+        margin-bottom: 30px;
+      }
+
+      .arrow::before,
+      .arrow::after {
+        content: "";
+        position: absolute;
+      }
+
+      .arrow::before {
+        width: 100%;
+        height: 100%;
+        border: 1px solid black;
+        border-right: 0;
+        border-bottom: 0;
+      }
+
+      .arrow::after {
+        width: 700px;
+        height: 1px;
+        background: black;
+        transform-origin: 0 100%;
+        transform: rotate(45deg);
+      }
+
+      .arrow--bottom {
+        transform: rotate(225deg);
+      }
+
+      #skill_rank_chart {
+        width: 80% !important;
+        height: 80% !important;
+        display: block;
+      }
+
+      .links line {
+        stroke: #999;
+        stroke-opacity: 0.6;
+      }
+      .nodes circle {
+        stroke: #fff;
+        stroke-width: 1.5;
+      }
+      .node-label {
+        pointer-events: none;
+        fill: #333;
+        font-family: "Arial", sans-serif;
+        font-size: 12px;
+      }
+
+      .card {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 920px;
+        padding: 10px;
+        /* background-color: white; */
+        border-radius: 10px;
+        /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+      }
+
+      .avatar {
+        font-weight: bold;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        width: 15%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+      }
+
+      .info {
+        flex: 1;
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        padding-left: 20px;
+      }
+
+      .main-info {
+        flex: 1;
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+
+      .sub-info {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+
+      .title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .owner {
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 10px;
+      }
+
+      .content-sub {
+        font-size: 14px;
+        color: #555;
+        margin-right: 10px;
+      }
+
+      .popularity {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 150px;
+        height: 80%;
+        font-size: 40px;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-weight: bold;
+      }
+
+      .card-link {
+        text-decoration: none; /* Removes underline from links */
+        color: inherit; /* Keeps the font color the same as the card's text */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scroll-container">
+      <div
+        class="snap-section"
+        id="snap-section-1"
+        style="
+          background-color: white;
+          flex-direction: row;
+          align-items: flex-start;
+          justify-content: flex-start;
+        "
+      >
+        <div style="display: flex; width: 70%; height: 100%">
+          <div class="svg-container" style="width: 30%; height: 50%">
+            <svg
+              height="1000"
+              aria-hidden="true"
+              viewBox="2 2 28 28"
+              version="1.1"
+              width="1000"
+              data-view-component="true"
+              class="octicon octicon-mark-github v-align-middle color-fg-default"
+            >
+              <path
+                d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"
+              ></path>
+            </svg>
+          </div>
+          <span style="font-size: 100px; font-weight: 40; margin-top: 35%"
+            >Job-Skill Issues Trending</span
+          >
+        </div>
+        <!-- <div class="content">
+          <p>당신의 하루에 도움이 될 수 있는 최고의 오픈소스를 찾아보세요!</p>
+        </div> -->
+        <div
+          style="
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+          "
+        >
+          <div style="margin-top: 100%">
+            <div class="arrow arrow--bottom"></div>
+          </div>
+        </div>
+      </div>
+      <div class="snap-section" style="background-color: white">
+        <div class="select-container">
+          <div id="select_job">
+            {% csrf_token %}
+            <div class="dropdown-container">
+              <div class="dropdown-label">Job</div>
+              <select class="dropdown-select" name="job" id="job">
+                <!-- <option value="{{job.name}}">{{job.name}}</option> -->
+                {% for job in job_list %}
+                <option value="{{ job }}">{{ job }}</option>
+                {% endfor %}
+              </select>
+              <!-- <span class="dropdown-icon">▼</span> -->
+            </div>
+            <button class="filter-button" type="submit" id="jobInput">
+              Search
+            </button>
+          </div>
+          <!-- {% for job in jobs_list %} -->
+          <!-- {% endfor %} -->
+          <!-- <input
+              id="jobInput"
+              type="submit"
+              name="job"
+              value="Search"
+            /> -->
+          <!-- </form> -->
+        </div>
+        <div class="skill-chart-container">
+          <canvas id="skill_rank_chart"></canvas>
+        </div>
+        <div id="skillTags" class="skill-tag-container"></div>
+      </div>
+      <div id="snap-section-2" class="snap-section">
+        <div class="content-option-container">
+          <button
+            id="githubButton"
+            class="filter-button content-button"
+            onclick="toggleContentButton('githubButton')"
+          >
+            Github
+          </button>
+          <button
+            id="stackoverflowButton"
+            class="filter-button content-button"
+            onclick="toggleContentButton('stackoverflowButton')"
+          >
+            StackOverflow
+          </button>
+        </div>
+        <div class="content-view-container">
+          <div id="contentsContainer" class="list-view-container">
+            <!-- <a
+              target="_blank"
+              href="https://github.com/jwasham/coding-interview-university"
+              class="filter-button card card-link"
+              id="ContentLink"
+            >
+              <div class="avatar">
+                <img />
+              </div>
+              <div class="info">
+                <div class="main-info">
+                  <div class="title">Title</div>
+                  <div class="owner">owner</div>
+                </div>
+                <div class="sub-info">
+                  <span class="content-sub">forks</span>
+                  <span class="content-sub">watches</span>
+                  <span class="content-sub"> recent_commit_time</span>
+                </div>
+              </div>
+              <div class="popularity">stars</div>
+            </a>
+            <a
+              target="_blank"
+              href="https://github.com/jwasham/coding-interview-university"
+              class="filter-button card card-link"
+              id="ContentLink"
+            >
+              <div class="avatar">
+                <img />
+              </div>
+              <div class="info">
+                <div class="main-info">
+                  <div class="title">Title</div>
+                  <div class="owner">owner</div>
+                </div>
+                <div class="sub-info">
+                  <span class="content-sub"> </span>
+                </div>
+              </div>
+              <div class="popularity">views</div>
+            </a>
+            <button class="filter-button" type="submit" id="ContentLink">
+              Content
+            </button>
+            <button class="filter-button" type="submit" id="ContentLink">
+              Content
+            </button>
+            <button class="filter-button" type="submit" id="ContentLink">
+              Content
+            </button> -->
+          </div>
+          <div class="hr-container"><hr /></div>
+          <div class="graph-view-container">
+            <div class="network-graph">
+              <svg id="skill2job_network" width="960" height="600"></svg>
+            </div>
+            <div class="keyword-cloud">
+              <svg id="keyword_cloud" width="960" height="600"></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script>
+      var chartInstance = null;
+      var skill_repositories = null;
+      var skill_questions = null;
+      renderChart([], []);
+      // var buttons = document.getElementById("githubButton");
+      // buttons.classList.add("active");
+
+      function toggleContentButton(selectedId) {
+        var buttons = document.querySelectorAll(".content-button");
+        buttons.forEach(function (button) {
+          if (button.id === selectedId) {
+            console.log("active");
+            button.classList.add("active");
+            if (selectedId === "githubButton") {
+              createRepoCards(skill_repositories);
+            } else if (selectedId === "stackoverflowButton") {
+              createQuestionsCards(skill_questions);
+            }
+          } else {
+            console.log("deactive");
+            button.classList.remove("active");
+          }
+        });
+      }
+
+      function toggleSkillButton(selectedId) {
+        var buttons = document.querySelectorAll(".skill-button");
+        buttons.forEach(function (button) {
+          if (button.id === selectedId) {
+            console.log("active");
+            button.classList.add("active");
+          } else {
+            console.log("deactive");
+            button.classList.remove("active");
+          }
+        });
+      }
+
+      document
+        .getElementById("jobInput")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          const job = document.getElementById("job").value;
+          console.log(job);
+          const url = `/TopicsTrending/skill-list/${encodeURIComponent(job)}/`;
+
+          fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+              const labels = Object.keys(data);
+              const values = Object.values(data);
+              console.log(labels);
+              console.log(values);
+              createButtons(labels);
+              renderChart(labels, values);
+              skill_repositories = null;
+              skill_questions = null;
+            })
+            .catch((error) => console.error("Error fetching data:", error));
+        });
+
+      let skillButtonCreateCnt = 0;
+      function createButtons(skill_name_list) {
+        const container = document.getElementById("skillTags");
+        container.innerHTML = ""; // Clear previous buttons
+
+        skill_name_list.forEach((skill) => {
+          skillButtonCreateCnt = skillButtonCreateCnt + 1;
+          const button = document.createElement("button");
+          button.innerText = skill; // Set button text to skill name
+          button.className = "filter-button skill-button"; // Set class name
+          button.id = "skillInput" + skillButtonCreateCnt;
+          button.type = "submit"; // Set button type
+
+          // Add click event handler
+          button.onclick = function () {
+            toggleSkillButton(button.id);
+            // alert("Clicked " + button.innerText);
+
+            const skillUrl = `/TopicsTrending/skill-list/${encodeURIComponent(
+              button.innerText
+            )}/`;
+            const jobUrl = `/TopicsTrending/job-list-by-skill/${encodeURIComponent(
+              button.innerText
+            )}/`;
+
+            Promise.all([
+              fetch(skillUrl).then((resp) => resp.json()),
+              fetch(jobUrl).then((resp) => resp.json()),
+            ])
+              .then(([skillData, jobData]) => {
+                skill_repositories = skillData.repositories;
+                skill_questions = skillData.questions;
+                skill_jobs = skillData.related_jobs;
+                console.log(skill_repositories);
+                console.log(skill_questions);
+                console.log(skill_jobs);
+                keywords_cloud_draw(skill_repositories, skill_questions);
+                // createRepoCards(skill_repositories);
+                // createQuestionsCards(skill_questions);
+                // renderChart(labels, values);
+
+                renderNodesGraph(skillData, jobData); // Function to visualize the graph
+              })
+              .catch((error) => console.error("Error fetching data:", error));
+
+            container.appendChild(button); // Add the button to the container
+          };
+        });
+      }
+
+      function createRepoCards(skill_repositories) {
+        skill_repositories = [
+          {
+            title: "Coding Interview University",
+            owner: "John Washam",
+            forks: 15000,
+            watches: 2000,
+            stars: 143000,
+            recent_commit_time: "2021-06-01",
+            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+          },
+          {
+            title: "You Don’t Know JS",
+            owner: "Kyle Simpson",
+            forks: 8000,
+            watches: 1000,
+            stars: 88000,
+            recent_commit_time: "2021-05-27",
+            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+          },
+          {
+            title: "You Don’t Know JS",
+            owner: "Kyle Simpson",
+            forks: 8000,
+            watches: 1000,
+            stars: 88000,
+            recent_commit_time: "2021-05-27",
+            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+          },
+          {
+            title: "You Don’t Know JS",
+            owner: "Kyle Simpson",
+            forks: 8000,
+            watches: 1000,
+            stars: 88000,
+            recent_commit_time: "2021-05-27",
+            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+          },
+          {
+            title: "You Don’t Know JS",
+            owner: "Kyle Simpson",
+            forks: 8000,
+            watches: 1000,
+            stars: 88000,
+            recent_commit_time: "2021-05-27",
+            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+          },
+        ];
+
+        const container = document.getElementById("contentsContainer");
+        container.innerHTML = "";
+
+        skill_repositories.forEach((repo) => {
+          const link = document.createElement("a");
+          link.setAttribute("href", repo.url);
+          link.setAttribute("target", "_blank");
+          link.id = "ContentLink";
+          link.className = "filter-button card card-link";
+
+          const avatarDiv = document.createElement("div");
+          avatarDiv.className = "avatar";
+          const img = document.createElement("img");
+          img.src = repo.img || "default-avatar.png"; // Assuming 'avatar_url' is part of the item object
+          img.style.width = "100%"; // Set the width of the image
+          img.style.height = "100%"; // Set the height of the image
+          img.style.borderRadius = "7px"; // Make the image circular
+          img.style.objectFit = "cover"; // Ensure the image covers the full area without distorting aspect ratio
+          avatarDiv.appendChild(img);
+
+          const infoDiv = document.createElement("div");
+          infoDiv.className = "info";
+
+          const mainInfoDiv = document.createElement("div");
+          mainInfoDiv.className = "main-info";
+          const titleDiv = document.createElement("div");
+          titleDiv.className = "title";
+          titleDiv.textContent = repo.title; // Assuming 'title' is part of the item object
+          const ownerDiv = document.createElement("div");
+          ownerDiv.className = "owner";
+          ownerDiv.textContent = repo.owner; // Assuming 'owner' is part of the item object
+          mainInfoDiv.appendChild(titleDiv);
+          mainInfoDiv.appendChild(ownerDiv);
+
+          const subInfoDiv = document.createElement("div");
+          subInfoDiv.className = "sub-info";
+          const forksSpan = document.createElement("span");
+          forksSpan.className = "content-sub";
+          forksSpan.textContent = `Forks: ${repo.forks}`; // Assuming 'forks' is part of the item object
+          const watchesSpan = document.createElement("span");
+          watchesSpan.className = "content-sub";
+          watchesSpan.textContent = `Stars: ${repo.stars}`; // Assuming 'watches' is part of the item object
+          const commitSpan = document.createElement("span");
+          commitSpan.className = "content-sub";
+          commitSpan.textContent = `Last Commit: ${repo.recent_commit_time}`; // Assuming 'recent_commit_time' is part of the item object
+          subInfoDiv.appendChild(forksSpan);
+          subInfoDiv.appendChild(watchesSpan);
+          subInfoDiv.appendChild(commitSpan);
+
+          const popularityDiv = document.createElement("div");
+          popularityDiv.className = "popularity";
+          popularityDiv.textContent = `${repo.watches}` + "\nViews"; // Assuming 'stars' is part of the item object
+
+          infoDiv.appendChild(mainInfoDiv);
+          infoDiv.appendChild(subInfoDiv);
+
+          link.appendChild(avatarDiv);
+          link.appendChild(infoDiv);
+          link.appendChild(popularityDiv);
+
+          container.appendChild(link);
+        });
+      }
+
+      function createQuestionsCards(skill_questions) {
+        skill_questions = [
+          {
+            url: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+            title: "Coding Interview University",
+            owner: "John Washam",
+            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+            views: "130K",
+          },
+          {
+            url: "https://github.com/getify/You-Dont-Know-JS",
+            title: "You Don't Know JS",
+            owner: "Kyle Simpson",
+            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+            views: "115K",
+          },
+        ];
+
+        const container = document.getElementById("contentsContainer");
+        container.innerHTML = "";
+
+        skill_questions.forEach((item) => {
+          const anchor = document.createElement("a");
+          anchor.setAttribute(
+            "href",
+            item.url || "https://github.com/jwasham/coding-interview-university"
+          );
+          anchor.setAttribute("target", "_blank");
+          anchor.className = "filter-button card card-link";
+          anchor.id = "ContentLink"; // Be cautious with this; IDs should be unique per document.
+
+          const avatarDiv = document.createElement("div");
+          avatarDiv.className = "avatar";
+          const img = document.createElement("img");
+          img.src =
+            item.img ||
+            "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj"; // Fallback to a default image if none is provided
+          img.style.width = "100%"; // Set the width of the image
+          img.style.height = "100%"; // Set the height of the image
+          img.style.borderRadius = "7px"; // Make the image circular
+          img.style.objectFit = "cover"; // Ensure the image covers the full area without distorting aspect ratio
+          avatarDiv.appendChild(img);
+
+          const infoDiv = document.createElement("div");
+          infoDiv.className = "info";
+
+          const mainInfoDiv = document.createElement("div");
+          mainInfoDiv.className = "main-info";
+
+          const titleDiv = document.createElement("div");
+          titleDiv.className = "title";
+          titleDiv.textContent = item.title || "No Title Provided"; // Fallback to default text
+
+          const ownerDiv = document.createElement("div");
+          ownerDiv.className = "owner";
+          ownerDiv.textContent = item.owner || "Unknown Owner"; // Fallback to default text
+
+          mainInfoDiv.appendChild(titleDiv);
+          mainInfoDiv.appendChild(ownerDiv);
+
+          const subInfoDiv = document.createElement("div");
+          subInfoDiv.className = "sub-info";
+
+          const contentSubSpan = document.createElement("span");
+          contentSubSpan.className = "content-sub";
+          // contentSubSpan.textContent = item.views || "No Additional Info"; // Sub-info like 'forks', 'stars' etc.
+
+          subInfoDiv.appendChild(contentSubSpan);
+
+          const popularityDiv = document.createElement("div");
+          popularityDiv.className = "popularity";
+          popularityDiv.textContent = `${item.views}` + "\nViews" || "No Views"; // Fallback to 'No Views'
+
+          infoDiv.appendChild(mainInfoDiv);
+          infoDiv.appendChild(subInfoDiv);
+          anchor.appendChild(avatarDiv);
+          anchor.appendChild(infoDiv);
+          anchor.appendChild(popularityDiv);
+
+          container.appendChild(anchor);
+        });
+      }
+
+      function renderChart(skill_name_list, skill_freqs) {
+        var ctx = document.getElementById("skill_rank_chart").getContext("2d");
+        // ctx.getContext("2d").clearRect(0, 0, ctx.width, ctx.height);
+
+        if (chartInstance) {
+          chartInstance.destroy();
+        }
+
+        chartInstance = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: skill_name_list,
+            datasets: [
+              {
+                label: "Skill Popularity",
+                data: skill_freqs,
+                backgroundColor: [
+                  "rgba(255, 99, 132, 0.5)",
+                  "rgba(54, 162, 235, 0.5)",
+                  "rgba(255, 206, 86, 0.5)",
+                ],
+                borderColor: [
+                  "rgba(255, 99, 132, 1)",
+                  "rgba(54, 162, 235, 1)",
+                  "rgba(255, 206, 86, 1)",
+                ],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                ticks: {
+                  font: {
+                    size: 16, // Increase x-axis label font size
+                  },
+                },
+              },
+              y: {
+                ticks: {
+                  font: {
+                    size: 16, // Increase y-axis label font size
+                  },
+                },
+                beginAtZero: true,
+              },
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  font: {
+                    size: 14, // Increase legend label font size
+                  },
+                },
+              },
+              tooltip: {
+                bodyFont: {
+                  size: 14, // Increase tooltip text font size
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // 키워드 클라우드 그리기 함수
+      function keywords_cloud_draw(skill_repositories, skill_questions) {
+        console.log("hi");
+        const titles = skill_repositories
+          .concat(skill_questions)
+          .map((item) => item.title);
+        // d3-cloud 설정
+        const layout = d3.layout
+          .cloud()
+          .size([960, 600])
+          .words(
+            titles.map(function (d) {
+              return { text: d, size: 10 + Math.random() * 90 };
+            })
+          )
+          .padding(5)
+          .rotate(function () {
+            return ~~(Math.random() * 2) * 90;
+          })
+          .font("Impact")
+          .fontSize(function (d) {
+            return d.size;
+          })
+          .on("end", draw);
+
+        layout.start();
+
+        const svgElement = d3
+          .select("#keyword_cloud")
+          .append("svg")
+          .attr("width", layout.size()[0])
+          .attr("height", layout.size()[1])
+          .append("g")
+          .attr(
+            "transform",
+            "translate(" +
+              layout.size()[0] / 2 +
+              "," +
+              layout.size()[1] / 2 +
+              ")"
+          )
+          .selectAll("text")
+          .data(words)
+          .enter()
+          .append("text")
+          .style("font-size", function (d) {
+            return d.size + "px";
+          })
+          .style("font-family", "Impact")
+          .attr("text-anchor", "middle")
+          .attr("transform", function (d) {
+            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+          })
+          .text(function (d) {
+            return d.text;
+          });
+      }
+
+      function renderNodesGraph(skillData, jobData) {
+        // nodes = [
+        //   { id: "skill1_name", name: "skill1_name", group: "skill" },
+
+        //   { id: "skill2_name", name: "skill2_name", group: "skill" },
+        //   { id: "skill3_name", name: "skill3_name", group: "skill" },
+        //   { id: "job1_name", name: "job1_name", group: "job" },
+        //   { id: "job2_name", name: "job2_name", group: "job" },
+        //   { id: "job3_name", name: "job3_name", group: "job" },
+        // ];
+        // links = [
+        //   { source: "skill1_name", target: "job1_name" },
+        //   { source: "skill1_name", target: "job2_name" },
+        //   { source: "skill1_name", target: "job3_name" },
+        //   { source: "skill2_name", target: "job1_name" },
+        //   { source: "skill2_name", target: "job2_name" },
+        //   { source: "skill2_name", target: "job3_name" },
+        //   { source: "skill3_name", target: "job1_name" },
+        //   { source: "skill3_name", target: "job2_name" },
+        //   { source: "skill3_name", target: "job3_name" },
+        // ];
+        const nodes = [];
+        const links = [];
+
+        // Add job node (from skillData input)
+        nodes.push({ id: input, name: input, group: "job" });
+
+        // Process skillData to add skill nodes and links
+        Object.keys(skillData).forEach((skill) => {
+          nodes.push({ id: skill, name: skill, group: "skill" });
+          links.push({ source: skill, target: input }); // Link skill to job
+        });
+
+        // Add skill node (from jobData input)
+        nodes.push({ id: input, name: input, group: "skill" });
+
+        // Process jobData to add job nodes and links
+        Object.keys(jobData).forEach((job) => {
+          nodes.push({ id: job, name: job, group: "job" });
+          links.push({ source: input, target: job }); // Link job to skill
+        });
+
+        const svg = d3.select("#skill2job_network"),
+          width = +svg.attr("width"),
+          height = +svg.attr("height");
+
+        // Simulation setup with forces
+        const simulation = d3
+          // .forceSimulation(nodes)
+          // .force(
+          //   "link",
+          //   d3.forceLink(links).id((d) => d.id)
+          // )
+          // .force("charge", d3.forceManyBody())
+          // .force("center", d3.forceCenter(width / 2, height / 2));
+
+          .forceSimulation(nodes)
+          .force(
+            "link",
+            d3
+              .forceLink(links)
+              .id((d) => d.id)
+              .distance(100)
+          ) // 링크 거리 증가
+          .force("charge", d3.forceManyBody().strength(-300)) // 노드 밀어내기 강화
+          .force("center", d3.forceCenter(width / 2, height / 2));
+
+        // Create links
+        const link = svg
+          .append("g")
+          .attr("class", "links")
+          .selectAll("line")
+          .data(links)
+          .join("line");
+
+        // Create nodes
+        const node = svg
+          .append("g")
+          .attr("class", "nodes")
+          .selectAll("g")
+          .data(nodes)
+          .enter()
+          .append("g");
+
+        const color = d3
+          .scaleOrdinal()
+          .domain(["job", "skill", "group3"]) // Set the group names if known
+          .range(["#e41a1c", "#377eb8", "#4daf4a"]); // Corresponding colors for each group
+
+        // Define the radius scale
+        const radiusScale = d3
+          .scaleSqrt()
+          .domain([
+            d3.min(nodes, (d) => d.weight),
+            d3.max(nodes, (d) => d.weight),
+          ]) // Domain from min to max weight
+          .range([5, 20]); // Range for radii, from 5 pixels to 20 pixels
+
+        node
+          .append("circle")
+          .attr("r", 5)
+          .attr("r", (d) => radiusScale(d.weight))
+          .attr("fill", (d) => color(d.group))
+          .call(drag(simulation));
+
+        node
+          .append("text")
+          .text((d) => d.name)
+          .attr("x", 8)
+          .attr("y", "0.31em")
+          .attr("class", "node-label");
+
+        // Update simulation on tick
+        simulation.on("tick", () => {
+          link
+            .attr("x1", (d) => d.source.x)
+            .attr("y1", (d) => d.source.y)
+            .attr("x2", (d) => d.target.x)
+            .attr("y2", (d) => d.target.y);
+
+          node
+            .selectAll("circle")
+            .attr("cx", (d) => d.x)
+            .attr("cy", (d) => d.y);
+
+          node
+            .selectAll("text")
+            .attr("x", (d) => d.x + 8)
+            .attr("y", (d) => d.y + 5);
+        });
+      }
+
+      function colorByGroup(group) {
+        const scale = d3.scaleOrdinal(d3.schemeCategory10);
+        return scale(group);
+      }
+
+      function drag(simulation) {
+        // Define drag behavior
+        function dragstarted(event) {
+          if (!event.active) simulation.alphaTarget(0.3).restart();
+          event.subject.fx = event.subject.x;
+          event.subject.fy = event.subject.y;
+        }
+
+        function dragged(event) {
+          event.subject.fx = event.x;
+          event.subject.fy = event.y;
+        }
+
+        function dragended(event) {
+          if (!event.active) simulation.alphaTarget(0);
+          event.subject.fx = null;
+          event.subject.fy = null;
+        }
+
+        return d3
+          .drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended);
+      }
+    </script>
+  </body>
+</html>

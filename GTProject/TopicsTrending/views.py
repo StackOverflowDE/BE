@@ -35,11 +35,13 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
 #------------------------------------------------------------
 # 직업 목록을 가져오는 함수를 구현합니다.
-@api_view(['GET'])
-def job_list(request):
+def index(request):
     jobs = Job.objects.all()
     job_name_list = [job.name for job in jobs]  # 직업의 이름만 추출
-    return Response(job_name_list)
+    context = {
+        'job_list': job_name_list
+    }
+    return render(request, 'index.html', context)
 
 #------------------------------------------------------------
 # 선택한 직업에 해당하는 기술들의 출현 횟수를 가져오는 함수를 구현합니다.
