@@ -24,5 +24,5 @@ urlpatterns = [
     path('rest/', include(router.urls)),
     path('TopicsTrending/skill-list/<str:job>/', skill_list, name='skill_list'),
     path('TopicsTrending/info-list/<str:skill>/', info_list, name='info_list'),
-    path('TopicsTrending/job-list-by-skill/<str:skill>', job_list_by_skill, name='job_list_by_skill'),
+    path('TopicsTrending/job-list-by-skill/<str:skill>/', job_list_by_skill, name='job_list_by_skill'),
 ]

@@ -63,6 +63,7 @@ def skill_list(request, job):
 @api_view(['GET'])
 def info_list(request, skill):
     # 스킬에 해당하는 저장소 중 조회수가 가장 높은 5개의 정보를 가져옵니다.
+    print(skill)
     top_repositories = (
         Repository.objects
         .filter(skill__name=skill)  # 해당 스킬에 속하는 저장소만 필터링
@@ -76,6 +77,8 @@ def info_list(request, skill):
         .order_by('-qs_view')[:5]
         .values('qs_title', 'qs_url', 'qs_view', 'qs_img', 'qs_votes', 'qs_answer', 'qs_writer')
     )
+    print(top_questions)
+    print(top_repositories)
     return Response({
         "top_repositories": list(top_repositories),
         "top_questions": list(top_questions),
