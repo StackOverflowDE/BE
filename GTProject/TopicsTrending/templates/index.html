@@ -369,7 +369,7 @@
 
       .avatar {
         font-weight: bold;
-        border: 1px solid #ccc;
+        /* border: 1px solid #ccc; */
         border-radius: 50%;
         width: 15%;
         height: 100%;
@@ -540,57 +540,7 @@
         </div>
         <div class="content-view-container">
           <div id="contentsContainer" class="list-view-container">
-            <!-- <a
-              target="_blank"
-              href="https://github.com/jwasham/coding-interview-university"
-              class="filter-button card card-link"
-              id="ContentLink"
-            >
-              <div class="avatar">
-                <img />
-              </div>
-              <div class="info">
-                <div class="main-info">
-                  <div class="title">Title</div>
-                  <div class="owner">owner</div>
-                </div>
-                <div class="sub-info">
-                  <span class="content-sub">forks</span>
-                  <span class="content-sub">watches</span>
-                  <span class="content-sub"> recent_commit_time</span>
-                </div>
-              </div>
-              <div class="popularity">stars</div>
-            </a>
-            <a
-              target="_blank"
-              href="https://github.com/jwasham/coding-interview-university"
-              class="filter-button card card-link"
-              id="ContentLink"
-            >
-              <div class="avatar">
-                <img />
-              </div>
-              <div class="info">
-                <div class="main-info">
-                  <div class="title">Title</div>
-                  <div class="owner">owner</div>
-                </div>
-                <div class="sub-info">
-                  <span class="content-sub"> </span>
-                </div>
-              </div>
-              <div class="popularity">views</div>
-            </a>
-            <button class="filter-button" type="submit" id="ContentLink">
-              Content
-            </button>
-            <button class="filter-button" type="submit" id="ContentLink">
-              Content
-            </button>
-            <button class="filter-button" type="submit" id="ContentLink">
-              Content
-            </button> -->
+            <span style="margin-top: 30px">플랫폼을 선택해주세요.</span>
           </div>
           <div class="hr-container"><hr /></div>
           <div class="graph-view-container">
@@ -713,6 +663,20 @@
                 // createQuestionsCards(skill_questions);
                 // renderChart(labels, values);
 
+                var buttons = document.querySelectorAll(".content-button");
+                buttons.forEach(function (button) {
+                  button.classList.remove("active");
+                });
+
+                const container = document.getElementById("contentsContainer");
+                container.innerHTML = "";
+                const infoSpan = document.createElement("span");
+                infoSpan.textContent = "플랫폼을 선택해주세요.";
+                infoSpan.style.zIndex = 100;
+                infoSpan.style.marginTop = "20px";
+
+                container.appendChild(infoSpan);
+
                 renderNodesGraph([button.innerText], job_count); // Function to visualize the graph
               })
               .catch((error) => console.error("Error fetching data:", error));
@@ -723,56 +687,17 @@
       }
 
       function createRepoCards(skill_repositories) {
-        if (skill_repositories === null) {
+        if (skill_repositories.length == 0) {
+          const container = document.getElementById("contentsContainer");
+          container.innerHTML = "";
+          const infoSpan = document.createElement("span");
+          infoSpan.textContent = "논의가 없습니다.";
+          infoSpan.style.zIndex = 100;
+          infoSpan.style.marginTop = "20px";
+
+          container.appendChild(infoSpan);
           return;
         }
-        // skill_repositories = [
-        //   {
-        //     title: "Coding Interview University",
-        //     owner: "John Washam",
-        //     forks: 15000,
-        //     watches: 2000,
-        //     stars: 143000,
-        //     recent_commit_time: "2021-06-01",
-        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-        //   },
-        //   {
-        //     title: "You Don’t Know JS",
-        //     owner: "Kyle Simpson",
-        //     forks: 8000,
-        //     watches: 1000,
-        //     stars: 88000,
-        //     recent_commit_time: "2021-05-27",
-        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-        //   },
-        //   {
-        //     title: "You Don’t Know JS",
-        //     owner: "Kyle Simpson",
-        //     forks: 8000,
-        //     watches: 1000,
-        //     stars: 88000,
-        //     recent_commit_time: "2021-05-27",
-        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-        //   },
-        //   {
-        //     title: "You Don’t Know JS",
-        //     owner: "Kyle Simpson",
-        //     forks: 8000,
-        //     watches: 1000,
-        //     stars: 88000,
-        //     recent_commit_time: "2021-05-27",
-        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-        //   },
-        //   {
-        //     title: "You Don’t Know JS",
-        //     owner: "Kyle Simpson",
-        //     forks: 8000,
-        //     watches: 1000,
-        //     stars: 88000,
-        //     recent_commit_time: "2021-05-27",
-        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-        //   },
-        // ];
 
         const container = document.getElementById("contentsContainer");
         container.innerHTML = "";
@@ -788,9 +713,14 @@
           avatarDiv.className = "avatar";
           const img = document.createElement("img");
           console.log(repo.repo_img);
-          img.src =
-            repo.repo_img ||
-            "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj"; // Assuming 'avatar_url' is part of the item object
+          const fullPath = repo.repo_img;
+          const basePath = "\\assets\\img\\git\\";
+          const startIndex = fullPath.indexOf(basePath);
+          const relativePath = fullPath.slice(startIndex);
+          img.src = `${relativePath.replace(/\\/g, "/")}`;
+          // img.src =
+          //   `${window.location.origin}${repo.repo_img}` ||
+          //   "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj"; // Assuming 'avatar_url' is part of the item object
           img.style.width = "100%"; // Set the width of the image
           img.style.height = "100%"; // Set the height of the image
           img.style.borderRadius = "7px"; // Make the image circular
@@ -855,7 +785,15 @@
       }
 
       function createQuestionsCards(skill_questions) {
-        if (skill_questions === null) {
+        if (skill_questions.length == 0) {
+          const container = document.getElementById("contentsContainer");
+          container.innerHTML = "";
+          const infoSpan = document.createElement("span");
+          infoSpan.textContent = "논의가 없습니다.";
+          infoSpan.style.zIndex = 100;
+          infoSpan.style.marginTop = "20px";
+
+          container.appendChild(infoSpan);
           return;
         }
         // skill_questions = [
