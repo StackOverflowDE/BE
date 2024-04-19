@@ -70,7 +70,7 @@ def info_list(request, skill):
     top_repositories = (
         Repository.objects
         .filter(skill__name=skill)  # 해당 스킬에 속하는 저장소만 필터링
-        .order_by('-repo_view')[:5]
+        .order_by('-repo_stars')[:5]
         .values('repo_title', 'repo_url', 'repo_view', 'repo_img', 'repo_stars', 'repo_forks', 'repo_writer', 'repo_recent_time')
     )
     # 스킬에 해당하는 질문 중 조회수가 가장 높은 5개의 정보를 가져옵니다.

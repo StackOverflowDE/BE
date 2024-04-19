@@ -15,7 +15,7 @@ img_path = os.path.join(current_dir, 'assets', 'img')
 
 
 def job_data_parser():
-    # CSV 파일 
+    # CSV 파일 경로
     file_path = os.path.join(data_path, 'job_data.csv')
 
     # CSV 파일 열기
@@ -68,36 +68,38 @@ def job_skill_DB_loader(job_skill):
             Skill.objects.create(name=skill, job=job, name_job_id=key)
 
 
-def git_repo_parser(skills):
-
+def git_repo_parser():
     # CSV 파일 경로
     file_path = os.path.join(data_path, 'git')
     git_img_path = os.path.join(img_path, 'git')
     for skill in os.listdir(file_path):
         # git CSV 파일 먼저 파싱
-        skill_path = os.path.join(file_path, skill)
-        for csv_file in os.listdir(skill_path):
-            csv_path = os.path.join(skill_path, csv_file)
+        skill_data_path = os.path.join(file_path, skill)
+        for csv_file in os.listdir(skill_data_path):
+            csv_path = os.path.join(skill_data_path, csv_file)
             with open(csv_path, newline='', encoding='utf-8') as csvfile:
                 # CSV 파일을 읽어들이는데 사용할 reader 생성
                 reader = csv.reader(csvfile)
                 # reader 객체를 subscriptable하게 만들기 위해 각 행을 리스트로 저장
                 rows = [row for row in reader]
+                rows = rows[1:]
+                rows = sorted(rows, key=lambda x: x[6].lower())
 
             # git 이미지 파일 파싱
-            skill_path = os.path.join(git_img_path, skill)
-            for img_file in os.listdir(skill_path):
-                if csv_path[-9:] == 'forks.csv':
-                    git_img_file_path = os.path.join(skill_path, 'forks')
-                    for i, img in enumerate(os.listdir(git_img_file_path)):
-                        rows[i+1].append(os.path.join(git_img_file_path, img))
-                elif csv_path[-9:] == 'stars.csv':
-                    git_img_file_path = os.path.join(skill_path, 'stars')
-                    for i, img in enumerate(os.listdir(git_img_file_path)):
-                        rows[i + 1].append(os.path.join(git_img_file_path, img))
+            skill_img_path = os.path.join(git_img_path, skill)
 
-            git_repo_DB_loader(skill, rows[1:])
-    # return result, all_stack
+            if csv_path[-9:] == 'forks.csv':
+                git_img_file_path = os.path.join(skill_img_path, 'forks')
+                for i, img in enumerate(os.listdir(git_img_file_path)):
+                    if len(os.listdir(git_img_file_path)) <= len(rows):
+                        rows[i].append(os.path.join(git_img_file_path, img))
+            elif csv_path[-9:] == 'stars.csv':
+                git_img_file_path = os.path.join(skill_img_path, 'stars')
+                for i, img in enumerate(os.listdir(git_img_file_path)):
+                    if len(os.listdir(git_img_file_path)) <= len(rows): # 레포 수 보다 이미지가 많으면 예외처리
+                        rows[i].append(os.path.join(git_img_file_path, img))
+
+            git_repo_DB_loader(skill, rows)
 
 
 def git_repo_DB_loader(skill, repo_infos):
@@ -120,12 +122,71 @@ def git_repo_DB_loader(skill, repo_infos):
         except IntegrityError:
             pass
 
+
+def sof_question_parser():
+    # CSV 파일 경로
+    file_path = os.path.join(data_path, 'sof')
+    sof_img_path = os.path.join(img_path, 'sof')
+    for skill in os.listdir(file_path):
+        # git CSV 파일 먼저 파싱
+        csv_path = os.path.join(file_path, skill)
+        #
+
+        with open(csv_path, newline='', encoding='utf-8') as csvfile:
+            # CSV 파일을 읽어들이는데 사용할 reader 생성
+            reader = csv.reader(csvfile)
+            # reader 객체를 subscriptable하게 만들기 위해 각 행을 리스트로 저장
+            rows = [row for row in reader]
+
+        rows = rows[1:]
+        rows = sorted(rows, key=lambda x: x[3].lower())
+
+        # git 이미지 파일 파싱
+        skill = skill[9:]
+        skill = skill[:-4]
+
+        skill_img_path = os.path.join(sof_img_path, skill)
+
+        for i, img in enumerate(os.listdir(skill_img_path)):
+            if len(os.listdir(skill_img_path)) <= len(rows):
+                rows[i].append(os.path.join(skill_img_path, img))
+
+        sof_question_DB_loader(skill, rows[1:])
+
+
+def sof_question_DB_loader(skill, question_info):
+
+    for info in question_info:
+        print(info)
+        tech_stack = Skill.objects.filter(name=skill).first()
+
+        if info[5][-1] == 'k':
+            view = str(int(info[5][:-1]) * 1000)
+        elif info[5][-1] == 'm':
+            view = str(int(float(info[5][:-1]) * 1_000_000))
+        else:
+            view = info[5]
+
+        try:
+            Question.objects.create(skill=tech_stack,
+                                      qs_title=info[0],
+                                      qs_writer=info[2],
+                                      qs_votes=info[3],
+                                      qs_answer=info[4],
+                                      qs_view=view,
+                                      qs_url=info[6],
+                                      qs_img=info[7] if len(info) == 8 else "")
+        except IntegrityError:
+            pass
+
+
 if __name__ == '__main__':
 
     job_skill, all_skill = job_data_parser()
     job_skill_DB_loader(job_skill)
 
-    git_repo_parser(sorted(list(all_skill)))
+    git_repo_parser()
+    sof_question_parser()
 
 
 

@@ -407,10 +407,11 @@
         font-size: 24px;
         font-weight: bold;
         margin-bottom: 5px;
+        text-align: left;
       }
 
       .owner {
-        font-size: 16px;
+        font-size: 13px;
         color: #555;
         margin-bottom: 10px;
       }
@@ -714,18 +715,28 @@
           const img = document.createElement("img");
           console.log(repo.repo_img);
           const fullPath = repo.repo_img;
-          const basePath = "/assets/img/git/";
+          // const basePath = "\\assets\\img\\git\\";
+          let basePath;
+
+          if (navigator.platform.startsWith("Win")) {
+            // Windows 운영 체제인 경우
+            basePath = "\\assets\\img\\git\\";
+          } else if (navigator.platform.startsWith("Mac")) {
+            // Mac 운영 체제인 경우
+            basePath = "/assets/img/git/";
+          } else {
+            // 기타 운영 체제인 경우 (Linux나 다른 OS)
+            basePath = "/assets/img/git/"; // 기본적으로 Mac 형식을 사용
+          }
           const startIndex = fullPath.indexOf(basePath);
           const relativePath = fullPath.slice(startIndex);
-          img.src = `${relativePath.replace(/\\/g, "/")}`;
-          // const basePath = "\\assets\\img\\git\\";
-          // const startIndex = fullPath.indexOf(basePath);
-          // const relativePath = fullPath.slice(startIndex);
-          // img.src = `${relativePath.replace(/\\/g, "/")}`;
-          
+          img.src =
+            `${relativePath.replace(/\\/g, "/")}` ||
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV5XSDhkX2rhaHrVI54jPT-kOSpEkB48cW2w&s";
+
           console.log(img.src);
           // img.src =
-          //   `${window.location.origin}${repo.repo_img}` 
+          //   `${window.location.origin}${repo.repo_img}` ||
           //   "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj"; // Assuming 'avatar_url' is part of the item object
           img.style.width = "100%"; // Set the width of the image
           img.style.height = "100%"; // Set the height of the image
@@ -836,9 +847,27 @@
           const avatarDiv = document.createElement("div");
           avatarDiv.className = "avatar";
           const img = document.createElement("img");
+          const fullPath = item.qs_img;
+          let basePath;
+
+          if (navigator.platform.startsWith("Win")) {
+            //   // Windows 운영 체제인 경우
+            basePath = "\\assets\\img\\sof\\";
+          } else if (navigator.platform.startsWith("Mac")) {
+            // Mac 운영 체제인 경우
+            basePath = "/assets/img/sof/";
+          } else {
+            // 기타 운영 체제인 경우 (Linux나 다른 OS)
+            basePath = "/assets/img/sof/"; // 기본적으로 Mac 형식을 사용
+          }
+          const startIndex = fullPath.indexOf(basePath);
+          const relativePath = fullPath.slice(startIndex);
           img.src =
-            item.qs_img ||
-            "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj"; // Fallback to a default image if none is provided
+            `${relativePath.replace(/\\/g, "/")}` ||
+            "data:image/png;base64,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";
+          // img.src =
+          //   item.qs_img ||
+          //   "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj"; // Fallback to a default image if none is provided
           img.style.width = "100%"; // Set the width of the image
           img.style.height = "100%"; // Set the height of the image
           img.style.borderRadius = "7px"; // Make the image circular
