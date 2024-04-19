@@ -33,7 +33,7 @@ class Repository(models.Model):
     repo_forks = models.IntegerField(default=0)
     repo_stars = models.IntegerField(default=0)
     # repo_img = models.CharField(max_length=100, default='')
-    repo_img = models.ImageField(upload_to='img/git/Android/forks/')
+    repo_img = models.ImageField(upload_to='img/git/')
     repo_view = models.IntegerField(default=0)
     repo_recent_time = models.DateTimeField(default=timezone.now)
     repo_writer = models.CharField(max_length=100, default='')
