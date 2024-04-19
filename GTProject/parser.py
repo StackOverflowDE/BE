@@ -149,7 +149,7 @@ def sof_question_parser():
 
         for i, img in enumerate(os.listdir(skill_img_path)):
             if len(os.listdir(skill_img_path)) <= len(rows):
-                rows[i + 1].append(os.path.join(skill_img_path, img))
+                rows[i].append(os.path.join(skill_img_path, img))
 
         sof_question_DB_loader(skill, rows[1:])
 
