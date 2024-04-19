@@ -261,7 +261,8 @@
         flex-direction: column;
         width: 45%;
         height: 100%;
-        /* background-color: purple; */
+        background-color: #f6f8fa;
+        border-radius: 10px;
       }
 
       .hr-container {
@@ -272,7 +273,7 @@
 
       hr {
         width: 0;
-        height: 90%;
+        height: 100%;
       }
 
       .skill-button {
@@ -361,9 +362,9 @@
         justify-content: flex-start;
         width: 920px;
         padding: 10px;
-        /* background-color: white; */
+        background-color: white;
         border-radius: 10px;
-        /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
       }
 
       .avatar {
@@ -596,9 +597,9 @@
             <div class="network-graph">
               <svg id="skill2job_network" width="960" height="600"></svg>
             </div>
-            <div class="keyword-cloud">
+            <!-- <div class="keyword-cloud">
               <svg id="keyword_cloud" width="960" height="600"></svg>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -786,6 +787,7 @@
           const avatarDiv = document.createElement("div");
           avatarDiv.className = "avatar";
           const img = document.createElement("img");
+          console.log(repo.repo_img);
           img.src =
             repo.repo_img ||
             "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj"; // Assuming 'avatar_url' is part of the item object
@@ -1012,66 +1014,80 @@
       }
 
       // 키워드 클라우드 그리기 함수
-      function keywords_cloud_draw(skill_repositories, skill_questions) {
-        const titles = skill_repositories
-          .concat(skill_questions)
-          .map((item) => item.title);
-        // d3-cloud 설정
-        const layout = d3.layout
-          .cloud()
-          .size([960, 600])
-          .words(
-            titles.map(function (d) {
-              return { text: d, size: 10 + Math.random() * 90 };
-            })
-          )
-          .padding(5)
-          .rotate(function () {
-            return ~~(Math.random() * 2) * 90;
-          })
-          .font("Impact")
-          .fontSize(function (d) {
-            return d.size;
-          })
-          .on("end", draw);
+      // function keywords_cloud_draw(skill_repositories, skill_questions) {
+      //   const titles = skill_repositories
+      //     .concat(skill_questions)
+      //     .map((item) => item.title);
+      //   // d3-cloud 설정
+      //   const layout = d3.layout
+      //     .cloud()
+      //     .size([960, 600])
+      //     .words(
+      //       titles.map(function (d) {
+      //         return { text: d, size: 10 + Math.random() * 90 };
+      //       })
+      //     )
+      //     .padding(5)
+      //     .rotate(function () {
+      //       return ~~(Math.random() * 2) * 90;
+      //     })
+      //     .font("Impact")
+      //     .fontSize(function (d) {
+      //       return d.size;
+      //     })
+      //     .on("end", draw);
 
-        layout.start();
+      //   layout.start();
 
-        const svgElement = d3
-          .select("#keyword_cloud")
-          .append("svg")
-          .attr("width", layout.size()[0])
-          .attr("height", layout.size()[1])
-          .append("g")
-          .attr(
-            "transform",
-            "translate(" +
-              layout.size()[0] / 2 +
-              "," +
-              layout.size()[1] / 2 +
-              ")"
-          )
-          .selectAll("text")
-          .data(words)
-          .enter()
-          .append("text")
-          .style("font-size", function (d) {
-            return d.size + "px";
-          })
-          .style("font-family", "Impact")
-          .attr("text-anchor", "middle")
-          .attr("transform", function (d) {
-            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-          })
-          .text(function (d) {
-            return d.text;
-          });
-      }
+      //   const svgElement = d3
+      //     .select("#keyword_cloud")
+      //     .append("svg")
+      //     .attr("width", layout.size()[0])
+      //     .attr("height", layout.size()[1])
+      //     .append("g")
+      //     .attr(
+      //       "transform",
+      //       "translate(" +
+      //         layout.size()[0] / 2 +
+      //         "," +
+      //         layout.size()[1] / 2 +
+      //         ")"
+      //     )
+      //     .selectAll("text")
+      //     .data(words)
+      //     .enter()
+      //     .append("text")
+      //     .style("font-size", function (d) {
+      //       return d.size + "px";
+      //     })
+      //     .style("font-family", "Impact")
+      //     .attr("text-anchor", "middle")
+      //     .attr("transform", function (d) {
+      //       return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+      //     })
+      //     .text(function (d) {
+      //       return d.text;
+      //     });
+      // }
 
       function createGraphData(job_skills, job_count) {
         console.log("createGraphData");
-        const nodes = [];
-        const links = [];
+        let nodes = [];
+        let links = [];
+
+        console.log("graphData.job_skills: ", job_skills);
+        // Link data creation: Connect every skill to every job
+        job_skills.forEach((skill) => {
+          for (const jobName in job_count) {
+            console.log(typeof jobName);
+            console.log(typeof skill);
+            links.push({
+              source: skill,
+              target: jobName,
+            });
+          }
+        });
+        console.log("graphData.job_skills2: ", job_skills);
 
         // 노드 데이터 생성: 기술
         job_skills.forEach((skill) => {
@@ -1079,7 +1095,7 @@
             id: skill,
             name: skill,
             group: "skill",
-            weight: 1,
+            weight: 3,
           });
         });
 
@@ -1092,49 +1108,39 @@
           });
         }
 
-        // Link data creation: Connect every skill to every job
-        job_skills.forEach((skill) => {
-          for (const jobName in job_count) {
-            links.push({
-              source: skill,
-              target: jobName,
-            });
-          }
-        });
-
-        // 노드 데이터 생성: 직무
-        // job_count.forEach((job) => {
-        //   const jobName = Object.keys(job)[0]; // 객체에서 직무 이름 추출
-        //   const jobCount = Object.values(job)[0];
-        //   nodes.push({
-        //     id: jobName,
-        //     name: jobName,
-        //     group: "job",
-        //     weight: jobCount,
-        //   });
-        // });
-
-        // // 링크 데이터 생성: 모든 기술을 모든 직무에 연결
-        // job_skills.forEach((skill) => {
-        //   job_count.forEach((job) => {
-        //     const jobName = Object.keys(job)[0];
-        //     links.push({
-        //       source: skill,
-        //       target: jobName,
-        //     });
-        //   });
-        // });
-
-        console.log(nodes);
-        console.log(links);
-
         return { nodes, links };
       }
 
+      function aggregateWeights(nodes) {
+        const nodesMap = new Map();
+
+        nodes.forEach((node) => {
+          const existingNode = nodesMap.get(node.id);
+          if (existingNode) {
+            existingNode.weight += node.weight; // 이미 존재하는 노드의 weight 합치기
+          } else {
+            nodesMap.set(node.id, { ...node }); // 새 노드로 추가
+          }
+        });
+
+        // Map의 값들만 추출하여 새 배열 생성
+        return Array.from(nodesMap.values());
+      }
+
+      var total_nodes = [];
+      var total_links = [];
+      let is_first = true;
       function renderNodesGraph(job_skills, job_count) {
         graphData = createGraphData(job_skills, job_count);
-        nodes = graphData.nodes;
-        links = graphData.links;
+        total_nodes = [...total_nodes, ...graphData.nodes];
+        total_links = [...total_links, ...graphData.links];
+
+        total_nodes = aggregateWeights(total_nodes);
+        console.log(total_nodes);
+        console.log(total_links);
+
+        const nodes = JSON.parse(JSON.stringify(total_nodes));
+        const links = JSON.parse(JSON.stringify(total_links));
         // nodes = [
         //   { id: "skill1_name", name: "skill1_name", group: "skill" },
 
@@ -1155,45 +1161,26 @@
         //   { source: "skill3_name", target: "job2_name" },
         //   { source: "skill3_name", target: "job3_name" },
         // ];
-        // const nodes = [];
-        // const links = [];
 
-        // Add job node (from skillData input)
-        // nodes.push({ id: input, name: input, group: "job" });
+        // if (!is_first) {
+        //   updateGraph(total_nodes, total_links);
+        // } else {
+        // is_first = false;
+        // const svg = d3.select("#skill2job_network"),
+        //   width = +svg.attr("width"),
+        //   height = +svg.attr("height");
 
-        // // Process skillData to add skill nodes and links
-        // Object.keys(skillData).forEach((skill) => {
-        //   nodes.push({ id: skill, name: skill, group: "skill" });
-        //   links.push({ source: skill, target: input }); // Link skill to job
-        // });
+        const svg = d3.select("#skill2job_network");
 
-        // Add skill node (from jobData input)
-        // nodes.push({ id: input, name: input, group: "skill" });
+        // simulation.stop(); // Stop any forces before clearing
+        svg.selectAll("*").remove(); // Remove all elements from the SVG to start fresh
+        // svg.html(""); // Double ensure it's empty
 
-        // Process jobData to add job nodes and links
-        // Object.keys(jobData).forEach((job) => {
-        //   nodes.push({ id: job, name: job, group: "job" });
-        //   links.push({ source: input, target: job }); // Link job to skill
-        // });
-
-        var svg = d3.select("#skill2job_network");
-
-        // If SVG doesn't exist, create it
-        if (svg.empty()) {
-          // const svg = d3.select("#skill2job_network"),
-          (width = +svg.attr("width")), (height = +svg.attr("height"));
-        }
+        const width = +svg.attr("width"),
+          height = +svg.attr("height");
 
         // Simulation setup with forces
         const simulation = d3
-          // .forceSimulation(nodes)
-          // .force(
-          //   "link",
-          //   d3.forceLink(links).id((d) => d.id)
-          // )
-          // .force("charge", d3.forceManyBody())
-          // .force("center", d3.forceCenter(width / 2, height / 2));
-
           .forceSimulation(nodes)
           .force(
             "link",
@@ -1225,7 +1212,7 @@
         const color = d3
           .scaleOrdinal()
           .domain(["job", "skill", "group3"]) // Set the group names if known
-          .range(["#e41a1c", "#377eb8", "#4daf4a"]); // Corresponding colors for each group
+          .range(["#FABA14", "#1F863C", "#4daf4a"]); // Corresponding colors for each group
 
         // Define the radius scale
         const radiusScale = d3
@@ -1269,11 +1256,7 @@
             .attr("y", (d) => d.y + 5);
         });
       }
-
-      function colorByGroup(group) {
-        const scale = d3.scaleOrdinal(d3.schemeCategory10);
-        return scale(group);
-      }
+      // }
 
       function drag(simulation) {
         // Define drag behavior

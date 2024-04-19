@@ -1,11 +1,12 @@
 from django.db import models
 from django.utils import timezone
-from django.db.models import Max
+
 
 class Job(models.Model):
     name = models.CharField(max_length=100, default='', null=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 class Skill(models.Model):
     name = models.CharField(max_length=100)
@@ -23,8 +24,9 @@ class Skill(models.Model):
         self.name_job_id = f"{self.name}_{self.job_id}"
         super().save(*args, **kwargs)
 
+
 class Repository(models.Model):
-    repo_title = models.CharField(max_length=100, default='', null=False)
+    repo_title = models.CharField(max_length=100, unique=True, default='', null=False)
     repo_url = models.CharField(max_length=100, default='', null=False)
     repo_created_at = models.DateTimeField(default=timezone.now)
     repo_updated_at = models.DateTimeField(auto_now=True)
@@ -37,9 +39,8 @@ class Repository(models.Model):
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
 
 
-
 class Question(models.Model):
-    qs_title = models.CharField(max_length=100, default='', null=False)
+    qs_title = models.CharField(max_length=100, unique=True, default='', null=False)
     qs_url = models.CharField(max_length=100, default='', null=False)
     qs_created_at = models.DateTimeField(default=timezone.now)
     qs_updated_at = models.DateTimeField(auto_now=True)
@@ -49,4 +50,3 @@ class Question(models.Model):
     qs_answer = models.CharField(max_length=100, default='')
     qs_writer = models.CharField(max_length=100, default='')
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
-
