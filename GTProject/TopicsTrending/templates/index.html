@@ -261,7 +261,8 @@
         flex-direction: column;
         width: 45%;
         height: 100%;
-        /* background-color: purple; */
+        background-color: #f6f8fa;
+        border-radius: 10px;
       }
 
       .hr-container {
@@ -272,7 +273,7 @@
 
       hr {
         width: 0;
-        height: 90%;
+        height: 100%;
       }
 
       .skill-button {
@@ -361,14 +362,14 @@
         justify-content: flex-start;
         width: 920px;
         padding: 10px;
-        /* background-color: white; */
+        background-color: white;
         border-radius: 10px;
-        /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
       }
 
       .avatar {
         font-weight: bold;
-        border: 1px solid #ccc;
+        /* border: 1px solid #ccc; */
         border-radius: 50%;
         width: 15%;
         height: 100%;
@@ -539,66 +540,16 @@
         </div>
         <div class="content-view-container">
           <div id="contentsContainer" class="list-view-container">
-            <!-- <a
-              target="_blank"
-              href="https://github.com/jwasham/coding-interview-university"
-              class="filter-button card card-link"
-              id="ContentLink"
-            >
-              <div class="avatar">
-                <img />
-              </div>
-              <div class="info">
-                <div class="main-info">
-                  <div class="title">Title</div>
-                  <div class="owner">owner</div>
-                </div>
-                <div class="sub-info">
-                  <span class="content-sub">forks</span>
-                  <span class="content-sub">watches</span>
-                  <span class="content-sub"> recent_commit_time</span>
-                </div>
-              </div>
-              <div class="popularity">stars</div>
-            </a>
-            <a
-              target="_blank"
-              href="https://github.com/jwasham/coding-interview-university"
-              class="filter-button card card-link"
-              id="ContentLink"
-            >
-              <div class="avatar">
-                <img />
-              </div>
-              <div class="info">
-                <div class="main-info">
-                  <div class="title">Title</div>
-                  <div class="owner">owner</div>
-                </div>
-                <div class="sub-info">
-                  <span class="content-sub"> </span>
-                </div>
-              </div>
-              <div class="popularity">views</div>
-            </a>
-            <button class="filter-button" type="submit" id="ContentLink">
-              Content
-            </button>
-            <button class="filter-button" type="submit" id="ContentLink">
-              Content
-            </button>
-            <button class="filter-button" type="submit" id="ContentLink">
-              Content
-            </button> -->
+            <span style="margin-top: 30px">플랫폼을 선택해주세요.</span>
           </div>
           <div class="hr-container"><hr /></div>
           <div class="graph-view-container">
             <div class="network-graph">
               <svg id="skill2job_network" width="960" height="600"></svg>
             </div>
-            <div class="keyword-cloud">
+            <!-- <div class="keyword-cloud">
               <svg id="keyword_cloud" width="960" height="600"></svg>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -629,6 +580,7 @@
             console.log("deactive");
             button.classList.remove("active");
           }
+          console.log(button.id);
         });
       }
 
@@ -645,6 +597,7 @@
         });
       }
 
+      var job_skills = null;
       document
         .getElementById("jobInput")
         .addEventListener("click", function (e) {
@@ -656,19 +609,19 @@
           fetch(url)
             .then((response) => response.json())
             .then((data) => {
-              const labels = Object.keys(data);
+              job_skills = Object.keys(data);
               const values = Object.values(data);
-              console.log(labels);
+              console.log(job_skills);
               console.log(values);
-              createButtons(labels);
-              renderChart(labels, values);
+              createButtons(job_skills);
+              renderChart(job_skills, values);
               skill_repositories = null;
               skill_questions = null;
             })
             .catch((error) => console.error("Error fetching data:", error));
         });
 
-      let skillButtonCreateCnt = 0;
+      var skillButtonCreateCnt = 0;
       function createButtons(skill_name_list) {
         const container = document.getElementById("skillTags");
         container.innerHTML = ""; // Clear previous buttons
@@ -679,14 +632,15 @@
           button.innerText = skill; // Set button text to skill name
           button.className = "filter-button skill-button"; // Set class name
           button.id = "skillInput" + skillButtonCreateCnt;
-          button.type = "submit"; // Set button type
+          button.type = "button";
+          button.style.zIndex = 100;
 
           // Add click event handler
-          button.onclick = function () {
+          button.addEventListener("click", function () {
             toggleSkillButton(button.id);
             // alert("Clicked " + button.innerText);
 
-            const skillUrl = `/TopicsTrending/skill-list/${encodeURIComponent(
+            const contentUrl = `/TopicsTrending/info-list/${encodeURIComponent(
               button.innerText
             )}/`;
             const jobUrl = `/TopicsTrending/job-list-by-skill/${encodeURIComponent(
@@ -694,85 +648,63 @@
             )}/`;
 
             Promise.all([
-              fetch(skillUrl).then((resp) => resp.json()),
+              fetch(contentUrl).then((resp) => resp.json()),
               fetch(jobUrl).then((resp) => resp.json()),
             ])
-              .then(([skillData, jobData]) => {
-                skill_repositories = skillData.repositories;
-                skill_questions = skillData.questions;
-                skill_jobs = skillData.related_jobs;
-                console.log(skill_repositories);
-                console.log(skill_questions);
-                console.log(skill_jobs);
-                keywords_cloud_draw(skill_repositories, skill_questions);
+              .then(([contentData, jobData]) => {
+                skill_repositories = contentData.top_repositories;
+                skill_questions = contentData.top_questions;
+                job_count = jobData;
+                console.log("skill_repositories:", skill_repositories);
+                console.log("skill_questions:", skill_questions);
+                console.log(job_count);
+                // keywords_cloud_draw(skill_repositories, skill_questions);
                 // createRepoCards(skill_repositories);
                 // createQuestionsCards(skill_questions);
                 // renderChart(labels, values);
 
-                renderNodesGraph(skillData, jobData); // Function to visualize the graph
+                var buttons = document.querySelectorAll(".content-button");
+                buttons.forEach(function (button) {
+                  button.classList.remove("active");
+                });
+
+                const container = document.getElementById("contentsContainer");
+                container.innerHTML = "";
+                const infoSpan = document.createElement("span");
+                infoSpan.textContent = "플랫폼을 선택해주세요.";
+                infoSpan.style.zIndex = 100;
+                infoSpan.style.marginTop = "20px";
+
+                container.appendChild(infoSpan);
+
+                renderNodesGraph([button.innerText], job_count); // Function to visualize the graph
               })
               .catch((error) => console.error("Error fetching data:", error));
+          });
 
-            container.appendChild(button); // Add the button to the container
-          };
+          container.appendChild(button); // Add the button to the container
         });
       }
 
       function createRepoCards(skill_repositories) {
-        skill_repositories = [
-          {
-            title: "Coding Interview University",
-            owner: "John Washam",
-            forks: 15000,
-            watches: 2000,
-            stars: 143000,
-            recent_commit_time: "2021-06-01",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-          },
-          {
-            title: "You Don’t Know JS",
-            owner: "Kyle Simpson",
-            forks: 8000,
-            watches: 1000,
-            stars: 88000,
-            recent_commit_time: "2021-05-27",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-          },
-          {
-            title: "You Don’t Know JS",
-            owner: "Kyle Simpson",
-            forks: 8000,
-            watches: 1000,
-            stars: 88000,
-            recent_commit_time: "2021-05-27",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-          },
-          {
-            title: "You Don’t Know JS",
-            owner: "Kyle Simpson",
-            forks: 8000,
-            watches: 1000,
-            stars: 88000,
-            recent_commit_time: "2021-05-27",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-          },
-          {
-            title: "You Don’t Know JS",
-            owner: "Kyle Simpson",
-            forks: 8000,
-            watches: 1000,
-            stars: 88000,
-            recent_commit_time: "2021-05-27",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-          },
-        ];
+        if (skill_repositories.length == 0) {
+          const container = document.getElementById("contentsContainer");
+          container.innerHTML = "";
+          const infoSpan = document.createElement("span");
+          infoSpan.textContent = "논의가 없습니다.";
+          infoSpan.style.zIndex = 100;
+          infoSpan.style.marginTop = "20px";
+
+          container.appendChild(infoSpan);
+          return;
+        }
 
         const container = document.getElementById("contentsContainer");
         container.innerHTML = "";
 
         skill_repositories.forEach((repo) => {
           const link = document.createElement("a");
-          link.setAttribute("href", repo.url);
+          link.setAttribute("href", repo.repo_url);
           link.setAttribute("target", "_blank");
           link.id = "ContentLink";
           link.className = "filter-button card card-link";
@@ -780,7 +712,15 @@
           const avatarDiv = document.createElement("div");
           avatarDiv.className = "avatar";
           const img = document.createElement("img");
-          img.src = repo.img || "default-avatar.png"; // Assuming 'avatar_url' is part of the item object
+          console.log(repo.repo_img);
+          const fullPath = repo.repo_img;
+          const basePath = "\\assets\\img\\git\\";
+          const startIndex = fullPath.indexOf(basePath);
+          const relativePath = fullPath.slice(startIndex);
+          img.src = `${relativePath.replace(/\\/g, "/")}`;
+          // img.src =
+          //   `${window.location.origin}${repo.repo_img}` ||
+          //   "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj"; // Assuming 'avatar_url' is part of the item object
           img.style.width = "100%"; // Set the width of the image
           img.style.height = "100%"; // Set the height of the image
           img.style.borderRadius = "7px"; // Make the image circular
@@ -794,10 +734,10 @@
           mainInfoDiv.className = "main-info";
           const titleDiv = document.createElement("div");
           titleDiv.className = "title";
-          titleDiv.textContent = repo.title; // Assuming 'title' is part of the item object
+          titleDiv.textContent = repo.repo_title; // Assuming 'title' is part of the item object
           const ownerDiv = document.createElement("div");
           ownerDiv.className = "owner";
-          ownerDiv.textContent = repo.owner; // Assuming 'owner' is part of the item object
+          ownerDiv.textContent = repo.repo_writer; // Assuming 'owner' is part of the item object
           mainInfoDiv.appendChild(titleDiv);
           mainInfoDiv.appendChild(ownerDiv);
 
@@ -805,20 +745,22 @@
           subInfoDiv.className = "sub-info";
           const forksSpan = document.createElement("span");
           forksSpan.className = "content-sub";
-          forksSpan.textContent = `Forks: ${repo.forks}`; // Assuming 'forks' is part of the item object
+          forksSpan.textContent = `Forks: ${repo.repo_forks}`; // Assuming 'forks' is part of the item object
           const watchesSpan = document.createElement("span");
           watchesSpan.className = "content-sub";
-          watchesSpan.textContent = `Stars: ${repo.stars}`; // Assuming 'watches' is part of the item object
+          watchesSpan.textContent = `Watches: ${repo.repo_view}`; // Assuming 'watches' is part of the item object
           const commitSpan = document.createElement("span");
           commitSpan.className = "content-sub";
-          commitSpan.textContent = `Last Commit: ${repo.recent_commit_time}`; // Assuming 'recent_commit_time' is part of the item object
+          commitSpan.textContent = `Last Commit: ${formatDateString(
+            repo.repo_recent_time
+          )}`; // Assuming 'recent_commit_time' is part of the item object
           subInfoDiv.appendChild(forksSpan);
           subInfoDiv.appendChild(watchesSpan);
           subInfoDiv.appendChild(commitSpan);
 
           const popularityDiv = document.createElement("div");
           popularityDiv.className = "popularity";
-          popularityDiv.textContent = `${repo.watches}` + "\nViews"; // Assuming 'stars' is part of the item object
+          popularityDiv.textContent = `${repo.repo_stars}` + "\nStars"; // Assuming 'stars' is part of the item object
 
           infoDiv.appendChild(mainInfoDiv);
           infoDiv.appendChild(subInfoDiv);
@@ -831,23 +773,45 @@
         });
       }
 
+      function formatDateString(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0"); // getMonth() is zero-based
+        const day = date.getDate().toString().padStart(2, "0");
+        const hours = date.getHours().toString().padStart(2, "0");
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+      }
+
       function createQuestionsCards(skill_questions) {
-        skill_questions = [
-          {
-            url: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-            title: "Coding Interview University",
-            owner: "John Washam",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-            views: "130K",
-          },
-          {
-            url: "https://github.com/getify/You-Dont-Know-JS",
-            title: "You Don't Know JS",
-            owner: "Kyle Simpson",
-            img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
-            views: "115K",
-          },
-        ];
+        if (skill_questions.length == 0) {
+          const container = document.getElementById("contentsContainer");
+          container.innerHTML = "";
+          const infoSpan = document.createElement("span");
+          infoSpan.textContent = "논의가 없습니다.";
+          infoSpan.style.zIndex = 100;
+          infoSpan.style.marginTop = "20px";
+
+          container.appendChild(infoSpan);
+          return;
+        }
+        // skill_questions = [
+        //   {
+        //     url: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //     title: "Coding Interview University",
+        //     owner: "John Washam",
+        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //     views: "130K",
+        //   },
+        //   {
+        //     url: "https://github.com/getify/You-Dont-Know-JS",
+        //     title: "You Don't Know JS",
+        //     owner: "Kyle Simpson",
+        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //     views: "115K",
+        //   },
+        // ];
 
         const container = document.getElementById("contentsContainer");
         container.innerHTML = "";
@@ -856,7 +820,8 @@
           const anchor = document.createElement("a");
           anchor.setAttribute(
             "href",
-            item.url || "https://github.com/jwasham/coding-interview-university"
+            item.qs_url ||
+              "https://github.com/jwasham/coding-interview-university"
           );
           anchor.setAttribute("target", "_blank");
           anchor.className = "filter-button card card-link";
@@ -866,7 +831,7 @@
           avatarDiv.className = "avatar";
           const img = document.createElement("img");
           img.src =
-            item.img ||
+            item.qs_img ||
             "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj"; // Fallback to a default image if none is provided
           img.style.width = "100%"; // Set the width of the image
           img.style.height = "100%"; // Set the height of the image
@@ -882,27 +847,31 @@
 
           const titleDiv = document.createElement("div");
           titleDiv.className = "title";
-          titleDiv.textContent = item.title || "No Title Provided"; // Fallback to default text
+          titleDiv.textContent = item.qs_title || "No Title Provided"; // Fallback to default text
+          titleDiv.style.fontSize = "15px";
 
           const ownerDiv = document.createElement("div");
           ownerDiv.className = "owner";
-          ownerDiv.textContent = item.owner || "Unknown Owner"; // Fallback to default text
+          ownerDiv.textContent = item.qs_writer || "Unknown Owner"; // Fallback to default text
 
           mainInfoDiv.appendChild(titleDiv);
           mainInfoDiv.appendChild(ownerDiv);
 
           const subInfoDiv = document.createElement("div");
           subInfoDiv.className = "sub-info";
-
-          const contentSubSpan = document.createElement("span");
-          contentSubSpan.className = "content-sub";
-          // contentSubSpan.textContent = item.views || "No Additional Info"; // Sub-info like 'forks', 'stars' etc.
-
-          subInfoDiv.appendChild(contentSubSpan);
+          const answersSpan = document.createElement("span");
+          answersSpan.className = "content-sub";
+          answersSpan.textContent = `Answers: ${item.qs_answer}`; // Assuming 'forks' is part of the item object
+          const votesSpan = document.createElement("span");
+          votesSpan.className = "content-sub";
+          votesSpan.textContent = `Votes: ${item.qs_votes}`; // Assuming 'watches' is part of the item object
+          subInfoDiv.appendChild(answersSpan);
+          subInfoDiv.appendChild(votesSpan);
 
           const popularityDiv = document.createElement("div");
           popularityDiv.className = "popularity";
-          popularityDiv.textContent = `${item.views}` + "\nViews" || "No Views"; // Fallback to 'No Views'
+          popularityDiv.textContent =
+            `${item.qs_view}` + "\nViews" || "No Views"; // Fallback to 'No Views'
 
           infoDiv.appendChild(mainInfoDiv);
           infoDiv.appendChild(subInfoDiv);
@@ -983,64 +952,133 @@
       }
 
       // 키워드 클라우드 그리기 함수
-      function keywords_cloud_draw(skill_repositories, skill_questions) {
-        console.log("hi");
-        const titles = skill_repositories
-          .concat(skill_questions)
-          .map((item) => item.title);
-        // d3-cloud 설정
-        const layout = d3.layout
-          .cloud()
-          .size([960, 600])
-          .words(
-            titles.map(function (d) {
-              return { text: d, size: 10 + Math.random() * 90 };
-            })
-          )
-          .padding(5)
-          .rotate(function () {
-            return ~~(Math.random() * 2) * 90;
-          })
-          .font("Impact")
-          .fontSize(function (d) {
-            return d.size;
-          })
-          .on("end", draw);
+      // function keywords_cloud_draw(skill_repositories, skill_questions) {
+      //   const titles = skill_repositories
+      //     .concat(skill_questions)
+      //     .map((item) => item.title);
+      //   // d3-cloud 설정
+      //   const layout = d3.layout
+      //     .cloud()
+      //     .size([960, 600])
+      //     .words(
+      //       titles.map(function (d) {
+      //         return { text: d, size: 10 + Math.random() * 90 };
+      //       })
+      //     )
+      //     .padding(5)
+      //     .rotate(function () {
+      //       return ~~(Math.random() * 2) * 90;
+      //     })
+      //     .font("Impact")
+      //     .fontSize(function (d) {
+      //       return d.size;
+      //     })
+      //     .on("end", draw);
 
-        layout.start();
+      //   layout.start();
 
-        const svgElement = d3
-          .select("#keyword_cloud")
-          .append("svg")
-          .attr("width", layout.size()[0])
-          .attr("height", layout.size()[1])
-          .append("g")
-          .attr(
-            "transform",
-            "translate(" +
-              layout.size()[0] / 2 +
-              "," +
-              layout.size()[1] / 2 +
-              ")"
-          )
-          .selectAll("text")
-          .data(words)
-          .enter()
-          .append("text")
-          .style("font-size", function (d) {
-            return d.size + "px";
-          })
-          .style("font-family", "Impact")
-          .attr("text-anchor", "middle")
-          .attr("transform", function (d) {
-            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-          })
-          .text(function (d) {
-            return d.text;
+      //   const svgElement = d3
+      //     .select("#keyword_cloud")
+      //     .append("svg")
+      //     .attr("width", layout.size()[0])
+      //     .attr("height", layout.size()[1])
+      //     .append("g")
+      //     .attr(
+      //       "transform",
+      //       "translate(" +
+      //         layout.size()[0] / 2 +
+      //         "," +
+      //         layout.size()[1] / 2 +
+      //         ")"
+      //     )
+      //     .selectAll("text")
+      //     .data(words)
+      //     .enter()
+      //     .append("text")
+      //     .style("font-size", function (d) {
+      //       return d.size + "px";
+      //     })
+      //     .style("font-family", "Impact")
+      //     .attr("text-anchor", "middle")
+      //     .attr("transform", function (d) {
+      //       return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+      //     })
+      //     .text(function (d) {
+      //       return d.text;
+      //     });
+      // }
+
+      function createGraphData(job_skills, job_count) {
+        console.log("createGraphData");
+        let nodes = [];
+        let links = [];
+
+        console.log("graphData.job_skills: ", job_skills);
+        // Link data creation: Connect every skill to every job
+        job_skills.forEach((skill) => {
+          for (const jobName in job_count) {
+            console.log(typeof jobName);
+            console.log(typeof skill);
+            links.push({
+              source: skill,
+              target: jobName,
+            });
+          }
+        });
+        console.log("graphData.job_skills2: ", job_skills);
+
+        // 노드 데이터 생성: 기술
+        job_skills.forEach((skill) => {
+          nodes.push({
+            id: skill,
+            name: skill,
+            group: "skill",
+            weight: 3,
           });
+        });
+
+        for (const jobName in job_count) {
+          nodes.push({
+            id: jobName,
+            name: jobName,
+            group: "job",
+            weight: job_count[jobName],
+          });
+        }
+
+        return { nodes, links };
       }
 
-      function renderNodesGraph(skillData, jobData) {
+      function aggregateWeights(nodes) {
+        const nodesMap = new Map();
+
+        nodes.forEach((node) => {
+          const existingNode = nodesMap.get(node.id);
+          if (existingNode) {
+            existingNode.weight += node.weight; // 이미 존재하는 노드의 weight 합치기
+          } else {
+            nodesMap.set(node.id, { ...node }); // 새 노드로 추가
+          }
+        });
+
+        // Map의 값들만 추출하여 새 배열 생성
+        return Array.from(nodesMap.values());
+      }
+
+      var total_nodes = [];
+      var total_links = [];
+      let is_first = true;
+      function renderNodesGraph(job_skills, job_count) {
+        graphData = createGraphData(job_skills, job_count);
+        total_nodes = [...total_nodes, ...graphData.nodes];
+        total_links = [...total_links, ...graphData.links];
+
+        total_nodes = aggregateWeights(total_nodes);
+        console.log(total_nodes);
+        console.log(total_links);
+
+        const nodes = JSON.parse(JSON.stringify(total_nodes));
+        const links = JSON.parse(JSON.stringify(total_links));
         // nodes = [
         //   { id: "skill1_name", name: "skill1_name", group: "skill" },
 
@@ -1061,41 +1099,26 @@
         //   { source: "skill3_name", target: "job2_name" },
         //   { source: "skill3_name", target: "job3_name" },
         // ];
-        const nodes = [];
-        const links = [];
 
-        // Add job node (from skillData input)
-        nodes.push({ id: input, name: input, group: "job" });
+        // if (!is_first) {
+        //   updateGraph(total_nodes, total_links);
+        // } else {
+        // is_first = false;
+        // const svg = d3.select("#skill2job_network"),
+        //   width = +svg.attr("width"),
+        //   height = +svg.attr("height");
 
-        // Process skillData to add skill nodes and links
-        Object.keys(skillData).forEach((skill) => {
-          nodes.push({ id: skill, name: skill, group: "skill" });
-          links.push({ source: skill, target: input }); // Link skill to job
-        });
+        const svg = d3.select("#skill2job_network");
 
-        // Add skill node (from jobData input)
-        nodes.push({ id: input, name: input, group: "skill" });
+        // simulation.stop(); // Stop any forces before clearing
+        svg.selectAll("*").remove(); // Remove all elements from the SVG to start fresh
+        // svg.html(""); // Double ensure it's empty
 
-        // Process jobData to add job nodes and links
-        Object.keys(jobData).forEach((job) => {
-          nodes.push({ id: job, name: job, group: "job" });
-          links.push({ source: input, target: job }); // Link job to skill
-        });
-
-        const svg = d3.select("#skill2job_network"),
-          width = +svg.attr("width"),
+        const width = +svg.attr("width"),
           height = +svg.attr("height");
 
         // Simulation setup with forces
         const simulation = d3
-          // .forceSimulation(nodes)
-          // .force(
-          //   "link",
-          //   d3.forceLink(links).id((d) => d.id)
-          // )
-          // .force("charge", d3.forceManyBody())
-          // .force("center", d3.forceCenter(width / 2, height / 2));
-
           .forceSimulation(nodes)
           .force(
             "link",
@@ -1127,7 +1150,7 @@
         const color = d3
           .scaleOrdinal()
           .domain(["job", "skill", "group3"]) // Set the group names if known
-          .range(["#e41a1c", "#377eb8", "#4daf4a"]); // Corresponding colors for each group
+          .range(["#FABA14", "#1F863C", "#4daf4a"]); // Corresponding colors for each group
 
         // Define the radius scale
         const radiusScale = d3
@@ -1136,7 +1159,7 @@
             d3.min(nodes, (d) => d.weight),
             d3.max(nodes, (d) => d.weight),
           ]) // Domain from min to max weight
-          .range([5, 20]); // Range for radii, from 5 pixels to 20 pixels
+          .range([5, 10]); // Range for radii, from 5 pixels to 20 pixels
 
         node
           .append("circle")
@@ -1171,11 +1194,7 @@
             .attr("y", (d) => d.y + 5);
         });
       }
-
-      function colorByGroup(group) {
-        const scale = d3.scaleOrdinal(d3.schemeCategory10);
-        return scale(group);
-      }
+      // }
 
       function drag(simulation) {
         // Define drag behavior
