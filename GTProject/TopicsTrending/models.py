@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 
 
+
 class Job(models.Model):
     name = models.CharField(max_length=100, default='', null=False)
     created_at = models.DateTimeField(default=timezone.now)
@@ -32,8 +33,8 @@ class Repository(models.Model):
     repo_updated_at = models.DateTimeField(auto_now=True)
     repo_forks = models.IntegerField(default=0)
     repo_stars = models.IntegerField(default=0)
-    # repo_img = models.CharField(max_length=100, default='')
-    repo_img = models.ImageField(upload_to='img/git/')
+    repo_img = models.CharField(max_length=100, default='')
+    # repo_img = models.ImageField(upload_to='img/git/')
     repo_view = models.IntegerField(default=0)
     repo_recent_time = models.DateTimeField(default=timezone.now)
     repo_writer = models.CharField(max_length=100, default='')

@@ -714,12 +714,18 @@
           const img = document.createElement("img");
           console.log(repo.repo_img);
           const fullPath = repo.repo_img;
-          const basePath = "\\assets\\img\\git\\";
+          const basePath = "/assets/img/git/";
           const startIndex = fullPath.indexOf(basePath);
           const relativePath = fullPath.slice(startIndex);
           img.src = `${relativePath.replace(/\\/g, "/")}`;
+          // const basePath = "\\assets\\img\\git\\";
+          // const startIndex = fullPath.indexOf(basePath);
+          // const relativePath = fullPath.slice(startIndex);
+          // img.src = `${relativePath.replace(/\\/g, "/")}`;
+          
+          console.log(img.src);
           // img.src =
-          //   `${window.location.origin}${repo.repo_img}` ||
+          //   `${window.location.origin}${repo.repo_img}` 
           //   "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj"; // Assuming 'avatar_url' is part of the item object
           img.style.width = "100%"; // Set the width of the image
           img.style.height = "100%"; // Set the height of the image

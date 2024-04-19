@@ -15,7 +15,7 @@ img_path = os.path.join(current_dir, 'assets', 'img')
 
 
 def job_data_parser():
-    # CSV 파일 경로
+    # CSV 파일 
     file_path = os.path.join(data_path, 'job_data.csv')
 
     # CSV 파일 열기
