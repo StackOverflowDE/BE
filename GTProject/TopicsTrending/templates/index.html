@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jobs</title>
+
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        color: #636c76;
+        font-family: "Roboto", sans-serif;
+      }
+
+      p {
+        position: relative;
+        left: -30%;
+        width: 500px;
+      }
+
+      .content {
+        position: relative;
+        bottom: -40%;
+        right: 5%;
+        width: 2000px;
+      }
+
+      .scroll-container {
+        height: 100vh;
+        overflow-y: scroll;
+        scroll-snap-type: y mandatory;
+        /* Use 'x mandatory' for horizontal snapping */
+      }
+
+      .snap-section {
+        height: 100%;
+        scroll-snap-align: start;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        border: 1px solid #ccc;
+      }
+
+      .select-container {
+        display: flex;
+        width: 100%;
+        /* background-color: blue; */
+        flex-direction: column;
+        align-items: center;
+        border-radius: 4px;
+        overflow: hidden; /* ensures the border wraps around the dropdown arrow */
+      }
+
+      /* Style the label */
+      .select-container .select-label {
+        background-color: #f0f0f0; /* light gray background */
+        padding: 10px;
+        border-right: 1px solid #ccc; /* border to separate label from dropdown */
+      }
+
+      /* Style the select dropdown */
+      .select-container select {
+        padding: 10px;
+        border: none;
+        background-color: #fff;
+        -webkit-appearance: none; /* Removes default chrome and safari style */
+        -moz-appearance: none; /* Removes default style Firefox */
+        appearance: none; /* Removes default browser style*/
+        font-size: 16px; /* Adjust this as needed */
+        cursor: pointer;
+      }
+
+      /* Style for the dropdown arrow */
+      .select-container::after {
+        /* content: "▼";
+        font-size: 12px;
+        position: relative;
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none; */
+      }
+
+      /* Style for the options */
+      .select-container select option {
+        padding: 10px;
+      }
+
+      /* Overall container to hold both label and select */
+      .dropdown-container {
+        display: flex;
+        float: left;
+        margin-right: 20px;
+        margin-left: 20px;
+        border: 1px solid #ccc; /* Border color as per your design */
+        border-radius: 4px;
+        overflow: hidden; /* To ensure border radius applies to children */
+        font-family: Arial, sans-serif; /* Your desired font */
+        font-size: 16px;
+      }
+
+      /* Label styling */
+      .dropdown-label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 85px;
+        height: 40px;
+        border: #d0d7de;
+        text-align: center;
+        background-color: #f0f0f0; /* Background color for the label */
+        border-right: 1px solid #ccc; /* Border between label and dropdown */
+        white-space: nowrap; /* Prevents wrapping of text in label */
+        font-size: 16px;
+      }
+
+      /* Select element styling */
+      .dropdown-select {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: #d0d7de;
+        width: 200px;
+        height: 40px;
+        outline: none; /* Removes the default focus outline */
+        -webkit-appearance: none; /* Removes default styling for Webkit browsers */
+        -moz-appearance: none; /* Removes default styling for Mozilla browsers */
+        appearance: none;
+        background-color: #fff; /* Background color for the select */
+        cursor: pointer; /* Change cursor to indicate it's selectable */
+        font-size: 16px;
+      }
+
+      /* Triangle icon at the end of the select element */
+      .dropdown-select::after {
+        content: "▼";
+        font-size: 12px;
+        display: flex;
+        transform: translateY(-50%);
+        pointer-events: none; /* Clicks on this element should still open the select */
+        color: #333; /* Icon color */
+      }
+
+      #jobInput {
+        background-color: #1f863c;
+        font-weight: bold;
+        font-family: "Roboto", sans-serif;
+        height: 40px;
+        color: white;
+        border: none;
+        font-size: 16px;
+        padding-inline: 30px;
+      }
+
+      #jobInput:hover {
+        background-color: #1d7536; /* Darker blue on hover */
+      }
+
+      .filter-button {
+        background-color: #f0f0f0; /* Light grey background */
+        color: #333; /* Dark grey text color */
+        padding: 5px 30px; /* Vertical and horizontal padding */
+        margin-inline: 5px;
+        font-size: 16px; /* Font size for the button text */
+        font-family: Arial, sans-serif; /* Font family */
+        border: 1px solid #ccc; /* Grey border */
+        border-radius: 7px; /* Rounded corners */
+        cursor: pointer; /* Changes the cursor to a pointer on hover */
+        text-align: center; /* Ensures the text is centered */
+        display: inline-block; /* Allows the button to size its width according to its content */
+        outline: none; /* Removes the outline on focus for some browsers */
+        -webkit-appearance: none; /* Removes default styling on some browsers */
+        -moz-appearance: none; /* Removes default styling on some browsers */
+        appearance: none; /* Removes default styling on some browsers */
+        box-shadow: none; /* Removes any browser-implemented shadow */
+        transition: background-color 0.3s, color 0.3s; /* Transition for hover effect */
+      }
+
+      /* Add a hover effect for the button */
+      .filter-button:hover {
+        background-color: #e6e6e6; /* Slightly darker grey background on hover */
+        color: #000; /* Black text color on hover */
+      }
+
+      .filter-button:active,
+      .filter-button.active {
+        /* Active state when the button is clicked */
+        background-color: #007bff; /* Blue background */
+        color: #fff; /* White text color */
+        border-color: #007bff; /* Blue border */
+      }
+
+      /* Remove the button's default styles on some browsers */
+      button::-moz-focus-inner {
+        border: 0;
+      }
+
+      .skill-chart-container {
+        width: 100%;
+        height: 70%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .skill-tag-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #snap-section-1 {
+        flex-direction: row;
+      }
+
+      #snap-section-2 {
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .content-option-container {
+        width: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        margin-bottom: 10px;
+      }
+
+      .content-view-container {
+        width: 100%;
+        height: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        padding-top: 1%;
+        /* background-color: burlywood; */
+      }
+
+      .list-view-container {
+        width: 45%;
+        height: 100%;
+        /* background-color: green; */
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .graph-view-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 45%;
+        height: 100%;
+        background-color: #f6f8fa;
+        border-radius: 10px;
+      }
+
+      .hr-container {
+        width: 5%;
+        height: 100%;
+        /* background-color: skyblue; */
+      }
+
+      hr {
+        width: 0;
+        height: 100%;
+      }
+
+      .skill-button {
+        background-color: #fab9148a;
+        width: fit-content;
+        padding-inline: 20px;
+        border: none;
+        color: rgb(180, 147, 0);
+        font-size: 13px;
+      }
+
+      .skill-button:active,
+      .skill-button.active {
+        /* Active state when the button is clicked */
+        background-color: #fab914f5; /* Blue background */
+        color: #2c2209ce; /* White text color */
+      }
+
+      .skill-button:hover {
+        background-color: #fab9145b;
+      }
+
+      #ContentLink {
+        width: 95%;
+        height: 18%;
+        margin-bottom: 1%;
+      }
+
+      .arrow {
+        width: 40px;
+        height: 40px;
+        position: relative;
+        margin-bottom: 30px;
+      }
+
+      .arrow::before,
+      .arrow::after {
+        content: "";
+        position: absolute;
+      }
+
+      .arrow::before {
+        width: 100%;
+        height: 100%;
+        border: 1px solid black;
+        border-right: 0;
+        border-bottom: 0;
+      }
+
+      .arrow::after {
+        width: 700px;
+        height: 1px;
+        background: black;
+        transform-origin: 0 100%;
+        transform: rotate(45deg);
+      }
+
+      .arrow--bottom {
+        transform: rotate(225deg);
+      }
+
+      #skill_rank_chart {
+        width: 80% !important;
+        height: 80% !important;
+        display: block;
+      }
+
+      .links line {
+        stroke: #999;
+        stroke-opacity: 0.6;
+      }
+      .nodes circle {
+        stroke: #fff;
+        stroke-width: 1.5;
+      }
+      .node-label {
+        pointer-events: none;
+        fill: #333;
+        font-family: "Arial", sans-serif;
+        font-size: 12px;
+      }
+
+      .card {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 920px;
+        padding: 10px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      .avatar {
+        font-weight: bold;
+        /* border: 1px solid #ccc; */
+        border-radius: 50%;
+        width: 15%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+      }
+
+      .info {
+        flex: 1;
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        padding-left: 20px;
+      }
+
+      .main-info {
+        flex: 1;
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+
+      .sub-info {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+
+      .title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-align: left;
+      }
+
+      .owner {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 10px;
+      }
+
+      .content-sub {
+        font-size: 14px;
+        color: #555;
+        margin-right: 10px;
+      }
+
+      .popularity {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 150px;
+        height: 80%;
+        font-size: 40px;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-weight: bold;
+      }
+
+      .card-link {
+        text-decoration: none; /* Removes underline from links */
+        color: inherit; /* Keeps the font color the same as the card's text */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scroll-container">
+      <div
+        class="snap-section"
+        id="snap-section-1"
+        style="
+          flex-direction: row;
+          align-items: flex-start;
+          justify-content: flex-start;
+        "
+      >
+        <div
+          style="
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: flex-start;
+            display: flex;
+            width: 80%;
+            height: 100%;
+          "
+        >
+          <div
+            style="
+              flex-direction: column;
+              align-items: flex-start;
+              justify-content: flex-start;
+              display: flex;
+              width: 100%;
+              height: 70%;
+            "
+          >
+            <div
+              class="svg-container"
+              style="
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: flex-start;
+                display: flex;
+                width: 100%;
+                height: 30%;
+                padding-top: 30px;
+              "
+            >
+              <svg
+                height="500"
+                aria-hidden="true"
+                viewBox="0 0 17 17"
+                version="1.1"
+                width="500"
+                data-view-component="true"
+                style="padding-left: 80px"
+                class="octicon octicon-mark-github v-align-middle color-fg-default"
+              >
+                <path
+                  d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"
+                ></path>
+              </svg>
+              <svg
+                aria-hidden="true"
+                width="500"
+                height="500"
+                viewBox="0 0 40 40"
+              >
+                <path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path>
+                <path
+                  d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z"
+                  fill="#F48024"
+                ></path>
+              </svg>
+            </div>
+
+            <span
+              style="
+                width: 100%;
+                font-size: 100px;
+                font-weight: 40;
+                margin-top: 22%;
+                margin-left: 17%;
+              "
+              >Job-Skill Issues Trending</span
+            >
+          </div>
+        </div>
+        <!-- <div class="content">
+          <p>당신의 하루에 도움이 될 수 있는 최고의 오픈소스를 찾아보세요!</p>
+        </div> -->
+        <div
+          style="
+            width: 20%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+          "
+        >
+          <div style="margin-top: 100%">
+            <div class="arrow arrow--bottom"></div>
+          </div>
+        </div>
+      </div>
+      <div class="snap-section" style="background-color: white">
+        <div class="select-container">
+          <div id="select_job">
+            {% csrf_token %}
+            <div class="dropdown-container">
+              <div class="dropdown-label">Job</div>
+              <select class="dropdown-select" name="job" id="job">
+                <!-- <option value="{{job.name}}">{{job.name}}</option> -->
+                {% for job in job_list %}
+                <option value="{{ job }}">{{ job }}</option>
+                {% endfor %}
+              </select>
+              <!-- <span class="dropdown-icon">▼</span> -->
+            </div>
+            <button class="filter-button" type="submit" id="jobInput">
+              Search
+            </button>
+          </div>
+          <!-- {% for job in jobs_list %} -->
+          <!-- {% endfor %} -->
+          <!-- <input
+              id="jobInput"
+              type="submit"
+              name="job"
+              value="Search"
+            /> -->
+          <!-- </form> -->
+        </div>
+        <div class="skill-chart-container">
+          <canvas id="skill_rank_chart"></canvas>
+        </div>
+        <div id="skillTags" class="skill-tag-container"></div>
+      </div>
+      <div id="snap-section-2" class="snap-section">
+        <div class="content-option-container">
+          <button
+            id="githubButton"
+            class="filter-button content-button"
+            onclick="toggleContentButton('githubButton')"
+          >
+            Github
+          </button>
+          <button
+            id="stackoverflowButton"
+            class="filter-button content-button"
+            onclick="toggleContentButton('stackoverflowButton')"
+          >
+            StackOverflow
+          </button>
+        </div>
+        <div class="content-view-container">
+          <div id="contentsContainer" class="list-view-container">
+            <span style="margin-top: 30px">플랫폼을 선택해주세요.</span>
+          </div>
+          <div class="hr-container"><hr /></div>
+          <div class="graph-view-container">
+            <div class="network-graph">
+              <svg id="skill2job_network" width="960" height="600"></svg>
+            </div>
+            <!-- <div class="keyword-cloud">
+              <svg id="keyword_cloud" width="960" height="600"></svg>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script>
+      var chartInstance = null;
+      var skill_repositories = null;
+      var skill_questions = null;
+      renderChart([], []);
+      // var buttons = document.getElementById("githubButton");
+      // buttons.classList.add("active");
+
+      function toggleContentButton(selectedId) {
+        var buttons = document.querySelectorAll(".content-button");
+        buttons.forEach(function (button) {
+          if (button.id === selectedId) {
+            console.log("active");
+            button.classList.add("active");
+            if (selectedId === "githubButton") {
+              createRepoCards(skill_repositories);
+            } else if (selectedId === "stackoverflowButton") {
+              createQuestionsCards(skill_questions);
+            }
+          } else {
+            console.log("deactive");
+            button.classList.remove("active");
+          }
+          console.log(button.id);
+        });
+      }
+
+      function toggleSkillButton(selectedId) {
+        var buttons = document.querySelectorAll(".skill-button");
+        buttons.forEach(function (button) {
+          if (button.id === selectedId) {
+            console.log("active");
+            button.classList.add("active");
+          } else {
+            console.log("deactive");
+            button.classList.remove("active");
+          }
+        });
+      }
+
+      var job_skills = null;
+      document
+        .getElementById("jobInput")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          const job = document.getElementById("job").value;
+          console.log(job);
+          const url = `/TopicsTrending/skill-list/${encodeURIComponent(job)}/`;
+
+          fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+              job_skills = Object.keys(data);
+              const values = Object.values(data);
+              console.log(job_skills);
+              console.log(values);
+              createButtons(job_skills);
+              renderChart(job_skills, values);
+              skill_repositories = null;
+              skill_questions = null;
+            })
+            .catch((error) => console.error("Error fetching data:", error));
+        });
+
+      var skillButtonCreateCnt = 0;
+      function createButtons(skill_name_list) {
+        const container = document.getElementById("skillTags");
+        container.innerHTML = ""; // Clear previous buttons
+
+        skill_name_list.forEach((skill) => {
+          skillButtonCreateCnt = skillButtonCreateCnt + 1;
+          const button = document.createElement("button");
+          button.innerText = skill; // Set button text to skill name
+          button.className = "filter-button skill-button"; // Set class name
+          button.id = "skillInput" + skillButtonCreateCnt;
+          button.type = "button";
+          button.style.zIndex = 100;
+
+          // Add click event handler
+          button.addEventListener("click", function () {
+            toggleSkillButton(button.id);
+            // alert("Clicked " + button.innerText);
+
+            const contentUrl = `/TopicsTrending/info-list/${encodeURIComponent(
+              button.innerText
+            )}/`;
+            const jobUrl = `/TopicsTrending/job-list-by-skill/${encodeURIComponent(
+              button.innerText
+            )}/`;
+
+            Promise.all([
+              fetch(contentUrl).then((resp) => resp.json()),
+              fetch(jobUrl).then((resp) => resp.json()),
+            ])
+              .then(([contentData, jobData]) => {
+                skill_repositories = contentData.top_repositories;
+                skill_questions = contentData.top_questions;
+                job_count = jobData;
+                console.log("skill_repositories:", skill_repositories);
+                console.log("skill_questions:", skill_questions);
+                console.log(job_count);
+                // keywords_cloud_draw(skill_repositories, skill_questions);
+                // createRepoCards(skill_repositories);
+                // createQuestionsCards(skill_questions);
+                // renderChart(labels, values);
+
+                var buttons = document.querySelectorAll(".content-button");
+                buttons.forEach(function (button) {
+                  button.classList.remove("active");
+                });
+
+                const container = document.getElementById("contentsContainer");
+                container.innerHTML = "";
+                const infoSpan = document.createElement("span");
+                infoSpan.textContent = "플랫폼을 선택해주세요.";
+                infoSpan.style.zIndex = 100;
+                infoSpan.style.marginTop = "20px";
+
+                container.appendChild(infoSpan);
+
+                renderNodesGraph([button.innerText], job_count); // Function to visualize the graph
+              })
+              .catch((error) => console.error("Error fetching data:", error));
+          });
+
+          container.appendChild(button); // Add the button to the container
+        });
+      }
+
+      function createRepoCards(skill_repositories) {
+        if (skill_repositories.length == 0) {
+          const container = document.getElementById("contentsContainer");
+          container.innerHTML = "";
+          const infoSpan = document.createElement("span");
+          infoSpan.textContent = "논의가 없습니다.";
+          infoSpan.style.zIndex = 100;
+          infoSpan.style.marginTop = "20px";
+
+          container.appendChild(infoSpan);
+          return;
+        }
+
+        const container = document.getElementById("contentsContainer");
+        container.innerHTML = "";
+
+        skill_repositories.forEach((repo) => {
+          const link = document.createElement("a");
+          link.setAttribute("href", repo.repo_url);
+          link.setAttribute("target", "_blank");
+          link.id = "ContentLink";
+          link.className = "filter-button card card-link";
+
+          const avatarDiv = document.createElement("div");
+          avatarDiv.className = "avatar";
+          const img = document.createElement("img");
+          console.log(repo.repo_img);
+          const fullPath = repo.repo_img;
+          // const basePath = "\\assets\\img\\git\\";
+          // let basePath;
+
+          // if (navigator.platform.startsWith("Win")) {
+          //   // Windows 운영 체제인 경우
+          //   basePath = "\\assets\\img\\git\\";
+          // } else if (navigator.platform.startsWith("Mac")) {
+          //   // Mac 운영 체제인 경우
+          //   basePath = "/assets/img/git/";
+          // } else {
+          //   // 기타 운영 체제인 경우 (Linux나 다른 OS)
+          //   basePath = "/assets/img/git/"; // 기본적으로 Mac 형식을 사용
+          // }
+          // const startIndex = fullPath.indexOf(basePath);
+          // const relativePath = fullPath.slice(startIndex);
+          // img.src =
+          //   `${relativePath.replace(/\\/g, "/")}` ||
+          //   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV5XSDhkX2rhaHrVI54jPT-kOSpEkB48cW2w&s";
+
+          // console.log(img.src);
+          img.src =
+            fullPath ||
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV5XSDhkX2rhaHrVI54jPT-kOSpEkB48cW2w&s";
+          img.style.width = "100%"; // Set the width of the image
+          img.style.height = "100%"; // Set the height of the image
+          img.style.borderRadius = "7px"; // Make the image circular
+          img.style.objectFit = "cover"; // Ensure the image covers the full area without distorting aspect ratio
+          avatarDiv.appendChild(img);
+
+          const infoDiv = document.createElement("div");
+          infoDiv.className = "info";
+
+          const mainInfoDiv = document.createElement("div");
+          mainInfoDiv.className = "main-info";
+          const titleDiv = document.createElement("div");
+          titleDiv.className = "title";
+          titleDiv.textContent = repo.repo_title; // Assuming 'title' is part of the item object
+          const ownerDiv = document.createElement("div");
+          ownerDiv.className = "owner";
+          ownerDiv.textContent = repo.repo_writer; // Assuming 'owner' is part of the item object
+          mainInfoDiv.appendChild(titleDiv);
+          mainInfoDiv.appendChild(ownerDiv);
+
+          const subInfoDiv = document.createElement("div");
+          subInfoDiv.className = "sub-info";
+          const forksSpan = document.createElement("span");
+          forksSpan.className = "content-sub";
+          forksSpan.textContent = `Forks: ${repo.repo_forks}`; // Assuming 'forks' is part of the item object
+          // const watchesSpan = document.createElement("span");
+          // watchesSpan.className = "content-sub";
+          // watchesSpan.textContent = `Watches: ${repo.repo_view}`; // Assuming 'watches' is part of the item object
+          const commitSpan = document.createElement("span");
+          commitSpan.className = "content-sub";
+          commitSpan.textContent = `Last Commit: ${formatDateString(
+            repo.repo_recent_time
+          )}`; // Assuming 'recent_commit_time' is part of the item object
+          subInfoDiv.appendChild(forksSpan);
+          // subInfoDiv.appendChild(watchesSpan);
+          subInfoDiv.appendChild(commitSpan);
+
+          const popularityDiv = document.createElement("div");
+          popularityDiv.className = "popularity";
+          popularityDiv.textContent = `${repo.repo_stars}` + "\nStars"; // Assuming 'stars' is part of the item object
+
+          infoDiv.appendChild(mainInfoDiv);
+          infoDiv.appendChild(subInfoDiv);
+
+          link.appendChild(avatarDiv);
+          link.appendChild(infoDiv);
+          link.appendChild(popularityDiv);
+
+          container.appendChild(link);
+        });
+      }
+
+      function formatDateString(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0"); // getMonth() is zero-based
+        const day = date.getDate().toString().padStart(2, "0");
+        const hours = date.getHours().toString().padStart(2, "0");
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+      }
+
+      function createQuestionsCards(skill_questions) {
+        if (skill_questions.length == 0) {
+          const container = document.getElementById("contentsContainer");
+          container.innerHTML = "";
+          const infoSpan = document.createElement("span");
+          infoSpan.textContent = "논의가 없습니다.";
+          infoSpan.style.zIndex = 100;
+          infoSpan.style.marginTop = "20px";
+
+          container.appendChild(infoSpan);
+          return;
+        }
+        // skill_questions = [
+        //   {
+        //     url: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //     title: "Coding Interview University",
+        //     owner: "John Washam",
+        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //     views: "130K",
+        //   },
+        //   {
+        //     url: "https://github.com/getify/You-Dont-Know-JS",
+        //     title: "You Don't Know JS",
+        //     owner: "Kyle Simpson",
+        //     img: "https://yt3.ggpht.com/yti/ANjgQV9yP1OTClFazkg6Dr6C5Iht_z83x-aUfZeBRudqO8v2nKk=s88-c-k-c0x00ffffff-no-rj",
+        //     views: "115K",
+        //   },
+        // ];
+
+        const container = document.getElementById("contentsContainer");
+        container.innerHTML = "";
+
+        skill_questions.forEach((item) => {
+          const anchor = document.createElement("a");
+          anchor.setAttribute(
+            "href",
+            item.qs_url ||
+              "https://github.com/jwasham/coding-interview-university"
+          );
+          anchor.setAttribute("target", "_blank");
+          anchor.className = "filter-button card card-link";
+          anchor.id = "ContentLink"; // Be cautious with this; IDs should be unique per document.
+
+          const avatarDiv = document.createElement("div");
+          avatarDiv.className = "avatar";
+          const img = document.createElement("img");
+          const fullPath = item.qs_img;
+          // let basePath;
+
+          // if (navigator.platform.startsWith("Win")) {
+          //   //   // Windows 운영 체제인 경우
+          //   basePath = "\\assets\\img\\sof\\";
+          // } else if (navigator.platform.startsWith("Mac")) {
+          //   // Mac 운영 체제인 경우
+          //   basePath = "/assets/img/sof/";
+          // } else {
+          //   // 기타 운영 체제인 경우 (Linux나 다른 OS)
+          //   basePath = "/assets/img/sof/"; // 기본적으로 Mac 형식을 사용
+          // }
+          // const startIndex = fullPath.indexOf(basePath);
+          // const relativePath = fullPath.slice(startIndex);
+          // img.src =
+          //   `${relativePath.replace(/\\/g, "/")}` ||
+          //   "data:image/png;base64,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";
+
+          img.src =
+            fullPath ||
+            "data:image/png;base64,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";
+
+          img.style.width = "100%"; // Set the width of the image
+          img.style.height = "100%"; // Set the height of the image
+          img.style.borderRadius = "7px"; // Make the image circular
+          img.style.objectFit = "cover"; // Ensure the image covers the full area without distorting aspect ratio
+          avatarDiv.appendChild(img);
+
+          const infoDiv = document.createElement("div");
+          infoDiv.className = "info";
+
+          const mainInfoDiv = document.createElement("div");
+          mainInfoDiv.className = "main-info";
+
+          const titleDiv = document.createElement("div");
+          titleDiv.className = "title";
+          titleDiv.textContent = item.qs_title || "No Title Provided"; // Fallback to default text
+          titleDiv.style.fontSize = "15px";
+
+          const ownerDiv = document.createElement("div");
+          ownerDiv.className = "owner";
+          ownerDiv.textContent = item.qs_writer || "Unknown Owner"; // Fallback to default text
+
+          mainInfoDiv.appendChild(titleDiv);
+          mainInfoDiv.appendChild(ownerDiv);
+
+          const subInfoDiv = document.createElement("div");
+          subInfoDiv.className = "sub-info";
+          const answersSpan = document.createElement("span");
+          answersSpan.className = "content-sub";
+          answersSpan.textContent = `Answers: ${item.qs_answer}`; // Assuming 'forks' is part of the item object
+          const votesSpan = document.createElement("span");
+          votesSpan.className = "content-sub";
+          votesSpan.textContent = `Votes: ${item.qs_votes}`; // Assuming 'watches' is part of the item object
+          subInfoDiv.appendChild(answersSpan);
+          subInfoDiv.appendChild(votesSpan);
+
+          const popularityDiv = document.createElement("div");
+          popularityDiv.className = "popularity";
+          popularityDiv.textContent =
+            `${item.qs_view}` + "\nViews" || "No Views"; // Fallback to 'No Views'
+
+          infoDiv.appendChild(mainInfoDiv);
+          infoDiv.appendChild(subInfoDiv);
+          anchor.appendChild(avatarDiv);
+          anchor.appendChild(infoDiv);
+          anchor.appendChild(popularityDiv);
+
+          container.appendChild(anchor);
+        });
+      }
+
+      function renderChart(skill_name_list, skill_freqs) {
+        var ctx = document.getElementById("skill_rank_chart").getContext("2d");
+        // ctx.getContext("2d").clearRect(0, 0, ctx.width, ctx.height);
+
+        if (chartInstance) {
+          chartInstance.destroy();
+        }
+
+        chartInstance = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: skill_name_list,
+            datasets: [
+              {
+                label: "Skill Popularity",
+                data: skill_freqs,
+                backgroundColor: [
+                  "rgba(255, 99, 132, 0.5)",
+                  "rgba(54, 162, 235, 0.5)",
+                  "rgba(255, 206, 86, 0.5)",
+                ],
+                borderColor: [
+                  "rgba(255, 99, 132, 1)",
+                  "rgba(54, 162, 235, 1)",
+                  "rgba(255, 206, 86, 1)",
+                ],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                ticks: {
+                  font: {
+                    size: 16, // Increase x-axis label font size
+                  },
+                },
+              },
+              y: {
+                ticks: {
+                  font: {
+                    size: 16, // Increase y-axis label font size
+                  },
+                },
+                beginAtZero: true,
+              },
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  font: {
+                    size: 14, // Increase legend label font size
+                  },
+                },
+              },
+              tooltip: {
+                bodyFont: {
+                  size: 14, // Increase tooltip text font size
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // 키워드 클라우드 그리기 함수
+      // function keywords_cloud_draw(skill_repositories, skill_questions) {
+      //   const titles = skill_repositories
+      //     .concat(skill_questions)
+      //     .map((item) => item.title);
+      //   // d3-cloud 설정
+      //   const layout = d3.layout
+      //     .cloud()
+      //     .size([960, 600])
+      //     .words(
+      //       titles.map(function (d) {
+      //         return { text: d, size: 10 + Math.random() * 90 };
+      //       })
+      //     )
+      //     .padding(5)
+      //     .rotate(function () {
+      //       return ~~(Math.random() * 2) * 90;
+      //     })
+      //     .font("Impact")
+      //     .fontSize(function (d) {
+      //       return d.size;
+      //     })
+      //     .on("end", draw);
+
+      //   layout.start();
+
+      //   const svgElement = d3
+      //     .select("#keyword_cloud")
+      //     .append("svg")
+      //     .attr("width", layout.size()[0])
+      //     .attr("height", layout.size()[1])
+      //     .append("g")
+      //     .attr(
+      //       "transform",
+      //       "translate(" +
+      //         layout.size()[0] / 2 +
+      //         "," +
+      //         layout.size()[1] / 2 +
+      //         ")"
+      //     )
+      //     .selectAll("text")
+      //     .data(words)
+      //     .enter()
+      //     .append("text")
+      //     .style("font-size", function (d) {
+      //       return d.size + "px";
+      //     })
+      //     .style("font-family", "Impact")
+      //     .attr("text-anchor", "middle")
+      //     .attr("transform", function (d) {
+      //       return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+      //     })
+      //     .text(function (d) {
+      //       return d.text;
+      //     });
+      // }
+
+      function createGraphData(job_skills, job_count) {
+        console.log("createGraphData");
+        let nodes = [];
+        let links = [];
+
+        console.log("graphData.job_skills: ", job_skills);
+        // Link data creation: Connect every skill to every job
+        job_skills.forEach((skill) => {
+          for (const jobName in job_count) {
+            console.log(typeof jobName);
+            console.log(typeof skill);
+            links.push({
+              source: skill,
+              target: jobName,
+            });
+          }
+        });
+        console.log("graphData.job_skills2: ", job_skills);
+
+        // 노드 데이터 생성: 기술
+        job_skills.forEach((skill) => {
+          nodes.push({
+            id: skill,
+            name: skill,
+            group: "skill",
+            weight: 3,
+          });
+        });
+
+        for (const jobName in job_count) {
+          nodes.push({
+            id: jobName,
+            name: jobName,
+            group: "job",
+            weight: job_count[jobName],
+          });
+        }
+
+        return { nodes, links };
+      }
+
+      function aggregateWeights(nodes) {
+        const nodesMap = new Map();
+
+        nodes.forEach((node) => {
+          const existingNode = nodesMap.get(node.id);
+          if (existingNode) {
+            existingNode.weight += node.weight; // 이미 존재하는 노드의 weight 합치기
+          } else {
+            nodesMap.set(node.id, { ...node }); // 새 노드로 추가
+          }
+        });
+
+        // Map의 값들만 추출하여 새 배열 생성
+        return Array.from(nodesMap.values());
+      }
+
+      var total_nodes = [];
+      var total_links = [];
+      let is_first = true;
+      function renderNodesGraph(job_skills, job_count) {
+        graphData = createGraphData(job_skills, job_count);
+        total_nodes = [...total_nodes, ...graphData.nodes];
+        total_links = [...total_links, ...graphData.links];
+
+        total_nodes = aggregateWeights(total_nodes);
+        console.log(total_nodes);
+        console.log(total_links);
+
+        const nodes = JSON.parse(JSON.stringify(total_nodes));
+        const links = JSON.parse(JSON.stringify(total_links));
+        // nodes = [
+        //   { id: "skill1_name", name: "skill1_name", group: "skill" },
+
+        //   { id: "skill2_name", name: "skill2_name", group: "skill" },
+        //   { id: "skill3_name", name: "skill3_name", group: "skill" },
+        //   { id: "job1_name", name: "job1_name", group: "job" },
+        //   { id: "job2_name", name: "job2_name", group: "job" },
+        //   { id: "job3_name", name: "job3_name", group: "job" },
+        // ];
+        // links = [
+        //   { source: "skill1_name", target: "job1_name" },
+        //   { source: "skill1_name", target: "job2_name" },
+        //   { source: "skill1_name", target: "job3_name" },
+        //   { source: "skill2_name", target: "job1_name" },
+        //   { source: "skill2_name", target: "job2_name" },
+        //   { source: "skill2_name", target: "job3_name" },
+        //   { source: "skill3_name", target: "job1_name" },
+        //   { source: "skill3_name", target: "job2_name" },
+        //   { source: "skill3_name", target: "job3_name" },
+        // ];
+
+        // if (!is_first) {
+        //   updateGraph(total_nodes, total_links);
+        // } else {
+        // is_first = false;
+        // const svg = d3.select("#skill2job_network"),
+        //   width = +svg.attr("width"),
+        //   height = +svg.attr("height");
+
+        const svg = d3.select("#skill2job_network");
+
+        // simulation.stop(); // Stop any forces before clearing
+        svg.selectAll("*").remove(); // Remove all elements from the SVG to start fresh
+        // svg.html(""); // Double ensure it's empty
+
+        const width = +svg.attr("width"),
+          height = +svg.attr("height");
+
+        // Simulation setup with forces
+        const simulation = d3
+          .forceSimulation(nodes)
+          .force(
+            "link",
+            d3
+              .forceLink(links)
+              .id((d) => d.id)
+              .distance(100)
+          ) // 링크 거리 증가
+          .force("charge", d3.forceManyBody().strength(-300)) // 노드 밀어내기 강화
+          .force("center", d3.forceCenter(width / 2, height / 2));
+
+        // Create links
+        const link = svg
+          .append("g")
+          .attr("class", "links")
+          .selectAll("line")
+          .data(links)
+          .join("line");
+
+        // Create nodes
+        const node = svg
+          .append("g")
+          .attr("class", "nodes")
+          .selectAll("g")
+          .data(nodes)
+          .enter()
+          .append("g");
+
+        const color = d3
+          .scaleOrdinal()
+          .domain(["job", "skill", "group3"]) // Set the group names if known
+          .range(["#FABA14", "#1F863C", "#4daf4a"]); // Corresponding colors for each group
+
+        // Define the radius scale
+        const radiusScale = d3
+          .scaleSqrt()
+          .domain([
+            d3.min(nodes, (d) => d.weight),
+            d3.max(nodes, (d) => d.weight),
+          ]) // Domain from min to max weight
+          .range([5, 10]); // Range for radii, from 5 pixels to 20 pixels
+
+        node
+          .append("circle")
+          .attr("r", 5)
+          .attr("r", (d) => radiusScale(d.weight))
+          .attr("fill", (d) => color(d.group))
+          .call(drag(simulation));
+
+        node
+          .append("text")
+          .text((d) => d.name)
+          .attr("x", 8)
+          .attr("y", "0.31em")
+          .attr("class", "node-label");
+
+        // Update simulation on tick
+        simulation.on("tick", () => {
+          link
+            .attr("x1", (d) => d.source.x)
+            .attr("y1", (d) => d.source.y)
+            .attr("x2", (d) => d.target.x)
+            .attr("y2", (d) => d.target.y);
+
+          node
+            .selectAll("circle")
+            .attr("cx", (d) => d.x)
+            .attr("cy", (d) => d.y);
+
+          node
+            .selectAll("text")
+            .attr("x", (d) => d.x + 8)
+            .attr("y", (d) => d.y + 5);
+        });
+      }
+      // }
+
+      function drag(simulation) {
+        // Define drag behavior
+        function dragstarted(event) {
+          if (!event.active) simulation.alphaTarget(0.3).restart();
+          event.subject.fx = event.subject.x;
+          event.subject.fy = event.subject.y;
+        }
+
+        function dragged(event) {
+          event.subject.fx = event.x;
+          event.subject.fy = event.y;
+        }
+
+        function dragended(event) {
+          if (!event.active) simulation.alphaTarget(0);
+          event.subject.fx = null;
+          event.subject.fy = null;
+        }
+
+        return d3
+          .drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended);
+      }
+    </script>
+  </body>
+</html>
