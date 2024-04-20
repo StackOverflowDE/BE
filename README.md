@@ -51,22 +51,36 @@
 
 <br>
 
-### 협업 명세
+## 협업 명세
 
-- 대시보드 디자인
-    
-    
-- ERD
-    
-    
-- API
-    
+### 대시보드 디자인
+
+<img width="671" alt="image" src="https://github.com/StackOverflowDE/StackHub_BE/assets/127376832/7a636ac6-091c-4cac-aa68-53821f129879" width="60%">
+
+
+### ERD
+
+<img src="https://github.com/StackOverflowDE/StackHub_BE/assets/127376832/db10c464-c78d-430a-9d46-10ae121e468e" alt="image" width="30%">
+
+### API
+
+<img src="https://github.com/StackOverflowDE/StackHub_BE/assets/127376832/04e09320-a834-44b6-80ec-03165963f9a2" alt="image" width="30%">
+   
 ## 개발 인원
 
-| FrontEnd | BackEnd |  BackEnd   |  Crawling   |  Crawling   | 
-| :--------: | :--------: | :------: | :-----: |  :-----: |
-|   정승현   |   이승준   |   신용승   |   정기홍   |   이소윤   | 
+| FrontEnd | BackEnd | BackEnd | Crawling | Crawling |
+| :-------:| :------:| :-----: | :------: | :------: |
+| 정승현    | 이승준   | 신용승   | 정기홍    | 이소윤    |
+| <img src="https://github.com/StackOverflowDE/StackHub_BE/assets/127376832/d191badb-c7fc-47a1-820d-dc5fc2660e6b" alt="image" width="100"> | <img src="https://github.com/StackOverflowDE/StackHub_BE/assets/127376832/c5bc2462-888d-42fb-ba36-f90d05abc92f" alt="image" width="100"> | <img src="https://github.com/StackOverflowDE/StackHub_BE/assets/127376832/0c401c32-8934-4c07-a084-bcd99103c9d0" alt="image" width="100"> | <img src="https://github.com/StackOverflowDE/StackHub_BE/assets/127376832/e4135717-feb4-4e2c-b72b-c251a523538d" alt="image" width="100"> | <img src="https://github.com/StackOverflowDE/StackHub_BE/assets/127376832/809105d7-5817-4f71-8356-ef5d92fd5de3" alt="image" width="100"> | 
 
+- 데이터 크롤링
+    - 이소윤 : 데이터 크롤링 및 전처리(프로그래머스)
+    - 정기홍 : 데이터 크롤링 및 전처리(github, stackoverflow)
+- 백엔드
+    - 신용승 : DB 관리 및 크롤링 데이터 DB 적재 모듈 개발 + 결과물 소개 문서 작성
+    - 이승준 : DB 관리 및 API 개발
+- 프론트엔드
+    - 정승현 : 웹 페이지 템플릿 작성 및 데이터 시각화
 
 <br>
 
