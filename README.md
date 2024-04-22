@@ -6,6 +6,7 @@
 - [기술 스택](#기술-스택)
 - [협엽 명세](#협업-명세)
 - [개발 인원](#개발-인원)
+- [Easy-To-Use](#Easy-To-Use)
 
 ## 프로젝트 주제
 
@@ -40,7 +41,7 @@
 <br>
 
 ## 기술 스택
-
+  python --version = python 3.12
 ### 1. BackEnd
 <img src="./image/stack/backend/1.png" width="25%">  <img src="./image/stack/backend/2.png" width="30%">
 ### 2. FrontEnd
@@ -66,7 +67,7 @@
 
 <img src="https://github.com/StackOverflowDE/StackHub_BE/assets/127376832/04e09320-a834-44b6-80ec-03165963f9a2" alt="image" width="30%">
    
-## 개발 인원
+### 개발 인원
 
 | FrontEnd | BackEnd | BackEnd | Crawling | Crawling |
 | :-------:| :------:| :-----: | :------: | :------: |
@@ -84,4 +85,21 @@
 
 <br>
 
+## Easy-To-Use
+1. git clone
+ 
+2. cd GTProject
 
+3. python -m venv venv (가상환경 생성)
+
+4. python -m pip install -r requirements.txt (라이브러리 생성) 
+
+5. python manage.py makemigrations
+
+6. python manage.py migrate
+
+7. python 크롤링 파일 실행
+
+8. python parser.py
+
+9. python manage.py runserver
