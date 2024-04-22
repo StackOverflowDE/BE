@@ -18,8 +18,10 @@
 <p align="justify">
 기업에서 직무에 따라 원하는 기술스택이 다른데 우리가 하고자하는 직무의 기술스택이 어떤것이 있는지 알아보고 트렌드가 어떤지 확인하고 그 기술스택들이 github와 stackoverflow와 같은 개발자 커뮤니티에서는 우리와 같은 관심사를 가진 개발자들이 어떤 주제를 다루고 있고 또 어떤 문제들이 있는지 확인하며 한눈에 보기쉽게 그리고 이용하기 쉽게 하기 위해 선정하게 되었습니다.<br/>
 <br/>
+
 - [프로젝트 보고서](https://chivalrous-chili-f77.notion.site/3fe1616db3fa4cb08806753b37785a18)
 - [결과물 소개 문서](https://www.canva.com/design/DAGC690HfWk/xYbHWDtp5okR22UI9sjZ_g/view?utm_content=DAGC690HfWk&utm_campaign=designshare&utm_medium=link&utm_source=editor)
+
 </p>
 
 <p align="center">
@@ -109,9 +111,9 @@ python --version = python 3.12
 
 6. python manage.py migrate
 
-7. 크롤링 파일 실행
-   7-1. Programmers 로그인 후, python programmers_crawling.py
-   7-2. Github 로그인 후, python crawling.py
+7. 크롤링 파일 실행<br/>
+   7-1. Programmers 로그인 후, python programmers_crawling.py<br/>
+   7-2. Github 로그인 후, python crawling.py<br/>
 
 8. python parser.py
 
